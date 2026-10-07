@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colores institucionales -->
+    <color name="primary">#0F4C81</color>
+    <color name="secondary">#02D0EB</color>
+
+    <!-- Neutros -->
+    <color name="black">#0F172A</color>
+    <color name="white">#F5F5F5</color>
+    <color name="shadow">#475569</color>
+    <color name="blur">#E0F2FE</color>
+
+    <!-- Estados -->
+    <color name="success">#00C8B3</color>
+    <color name="warning">#FEF3C7</color>
+    <color name="danger">#FEE2E2</color>
+
+    <!-- Texto de estados -->
+    <color name="success_text">#065F46</color>
+    <color name="warning_text">#FF8D28</color>
+    <color name="danger_text">#CC0000</color>
+
+</resources>

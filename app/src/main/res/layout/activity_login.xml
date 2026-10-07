@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".LoginActivity">
+
+    <!-- IMAGEN LATERAL -->
+    <ImageView
+        android:id="@+id/imgLateral"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:scaleType="center"
+        android:src="@drawable/img_seprice"
+        android:contentDescription="Imagen de la clínica" />
+
+    <!-- CONTENEDOR LOGIN -->
+    <LinearLayout
+        android:id="@+id/formContainer"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/bg_splash">
+
+
+        <!-- Form Login  -->
+        <LinearLayout
+            android:id="@+id/loginCard"
+            android:layout_width="340dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="36dp">
+
+            <!-- Logo -->
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:contentDescription="Logo"
+                android:scaleType="fitCenter"
+                android:src="@drawable/logo_seprice" />
+
+            <!-- Usuario -->
+            <TextView
+                android:id="@+id/tvUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Usuario"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_body" />
+
+
+            <EditText
+                android:id="@+id/etUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:autofillHints="username"
+                android:hint="Ingrese su usuario"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/shadow" />
+
+            <!-- Contraseña -->
+            <TextView
+                android:id="@+id/tvContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Contraseña"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_body" />
+
+
+            <EditText
+                android:id="@+id/etContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:autofillHints="password"
+                android:hint="Ingrese su contraseña"
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:textColorHint="@color/shadow" />
+
+            <!-- Botón ingresar -->
+            <Button
+                android:id="@+id/btnIngresar"
+                style="@style/ButtonPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:text="Ingresar" />
+
+            <!-- Olvidaste contraseña -->
+            <TextView
+                android:id="@+id/tvOlvidasteContrasena"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="36dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/spacing_m"
+                android:text="¿Olvidaste tu contraseña?"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_small" />
+
+            <!-- Copyright -->
+            <TextView
+                android:id="@+id/tvCopyright"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2026 © ClínicaSePrice"
+                android:textColor="@color/shadow"
+                android:textSize="@dimen/text_small" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
+
