@@ -10,14 +10,14 @@
     <dimen name="border_thin">1dp</dimen>
     <dimen name="border_medium">2dp</dimen>
     <dimen name="radius_card">16dp</dimen>
-    <dimen name="radius_button">12dp</dimen>
-    <dimen name="radius_label">10dp</dimen>
+    <dimen name="radius_button">8dp</dimen>
+    <dimen name="radius_label">12dp</dimen>
 
     <!-- Elevación -->
     <dimen name="elevation_s">2dp</dimen>
     <dimen name="elevation_m">4dp</dimen>
     <!-- Espaciados -->
-    <dimen name="spacing_s">8dp</dimen>
+    <dimen name="spacing_s">12p</dimen>
     <dimen name="spacing_m">16dp</dimen>
     <dimen name="spacing_l">24dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
