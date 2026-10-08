@@ -1,6 +1,8 @@
 package com.example.clinicaseprice
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,10 +13,31 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_menu)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        val cardConsultorios = findViewById<LinearLayout>(R.id.cardConsultorios)
+
+        val cardEstudios = findViewById<LinearLayout>(R.id.cardEstudios)
+
+        cardConsultorios.setOnClickListener {
+
+            val intent = Intent(
+                this,
+                ConsultoriosActivity::class.java
+            )
+
+            startActivity(intent)
+        }
+
+        cardEstudios.setOnClickListener {
+
+            val intent = Intent(
+                this,
+                EstudiosActivity::class.java
+            )
+
+            startActivity(intent)
         }
     }
+
+
 }

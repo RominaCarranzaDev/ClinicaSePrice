@@ -1,10 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MenuActivity">
+    tools:context=".MenuActivity"
+    android:orientation="vertical">
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/header_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/logo_seprice" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sistema de Gestión - Clínica SePrice"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_title" />
+
+    </LinearLayout>
+    <!-- Container cards -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="150dp">
+        <!-- Card Circuito Uno -->
+        <LinearLayout
+            android:id="@+id/cardConsultorios"
+            android:layout_width="0dp"
+            android:layout_height="280dp"
+            android:layout_weight="3"
+            android:background="@drawable/bg_card_primary"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:contentDescription="Consultorios externos"
+                android:src="@drawable/ic_consultorio"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Consultorios Externos"
+                style="@style/Title"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Turnos y atención médica para las especialidades."
+                style="@style/Subtitle" />
+
+        </LinearLayout>
+        <!-- Espacio vacio -->
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Card Circuito Dos -->
+        <LinearLayout
+            android:id="@+id/cardEstudios"
+            android:layout_width="0dp"
+            android:layout_height="280dp"
+            android:layout_weight="3"
+            android:background="@drawable/bg_card_primary"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:contentDescription="EstudiosLaboratorio"
+                android:src="@drawable/ic_estudios"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Estudios Clínicos y Laboratorio"
+                style="@style/Title"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Turnos y atención médica para los estudios médicos."
+                style="@style/Subtitle"  />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

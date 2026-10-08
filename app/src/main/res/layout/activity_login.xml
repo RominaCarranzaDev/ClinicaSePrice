@@ -115,6 +115,16 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_small" />
 
+            <!-- Mensaje -->
+            <TextView
+                android:id="@+id/tvMensaje"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Acceso exclusivo para personal autorizado de SePrice Clínica"
+                android:textColor="@color/shadow"
+                android:textSize="@dimen/text_small"
+                android:layout_marginBottom="8dp"/>
+
             <!-- Copyright -->
             <TextView
                 android:id="@+id/tvCopyright"
