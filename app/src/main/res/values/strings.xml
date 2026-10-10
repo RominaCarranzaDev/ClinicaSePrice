@@ -39,4 +39,32 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
+    <string-array name="array_estados">
+        <item>Estado: Todos</item>
+        <item>Estado: Confirmado</item>
+        <item>Estado: Pendiente</item>
+        <item>Estado: Cancelado</item>
+    </string-array>
+
+    <string-array name="array_obras_sociales">
+        <item>Obra Social: Todas</item>
+        <item>Obra Social: OSDE</item>
+        <item>Obra Social: Swiss Medical</item>
+        <item>Obra Social: Galeno</item>
+        <item>Obra Social: Particular</item>
+    </string-array>
+
+    <!-- Arrays específicos para el registro de nuevos pacientes -->
+    <string-array name="array_obras_sociales_registro">
+        <item>OSDE</item>
+        <item>Swiss Medical</item>
+        <item>Galeno</item>
+        <item>Particular</item>
+    </string-array>
+
+    <string-array name="array_estados_registro">
+        <item>Confirmado</item>
+        <item>Pendiente</item>
+    </string-array>
 </resources>
