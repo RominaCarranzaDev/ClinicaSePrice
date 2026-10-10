@@ -17,7 +17,7 @@
     <dimen name="elevation_s">2dp</dimen>
     <dimen name="elevation_m">4dp</dimen>
     <!-- Espaciados -->
-    <dimen name="spacing_s">12p</dimen>
+    <dimen name="spacing_s">12dp</dimen>
     <dimen name="spacing_m">16dp</dimen>
     <dimen name="spacing_l">24dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
