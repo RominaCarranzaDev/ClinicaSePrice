@@ -11,8 +11,7 @@
         <item name="android:backgroundTint">@color/primary</item>
 
         <item name="android:gravity">center</item>
-        <item name="android:paddingHorizontal">@dimen/spacing_m</item>
-        <item name="android:paddingVertical">@dimen/spacing_s</item>
+        <item name="android:padding">@dimen/spacing_s</item>
 
     </style>
 
@@ -27,8 +26,7 @@
         <item name="android:backgroundTint">@color/white</item>
 
         <item name="android:gravity">center</item>
-        <item name="android:paddingHorizontal">@dimen/spacing_m</item>
-        <item name="android:paddingVertical">@dimen/spacing_s</item>
+        <item name="android:padding">@dimen/spacing_s</item>
 
     </style>
 
@@ -60,6 +58,5 @@
     <style name="Subtitle">
         <item name="android:textColor">@color/shadow</item>
         <item name="android:textSize">@dimen/text_subtitle</item>
-        <item name="textAllCaps">true</item>
     </style>
 </resources>

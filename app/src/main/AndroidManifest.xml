@@ -26,20 +26,23 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".MainActivity2"
-            android:exported="false"
-            android:theme="@style/Theme.ClinicaSePrice"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".MenuActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ConsultoriosActivity"
+            android:name=".ConsultoriosPacientesActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".EstudiosActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".BaseActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ConsultoriosTurnosActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>
