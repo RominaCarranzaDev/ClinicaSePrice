@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:text="CLÍNICA MÉDICA"
                     android:textColor="@color/shadow"
-                    android:textSize="8sp" />
+                    android:textSize="11sp" />
 
             </LinearLayout>
 
@@ -73,72 +73,53 @@
             android:paddingHorizontal="@dimen/spacing_s"
             android:paddingVertical="@dimen/spacing_m" >
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/navMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/blur"
                 android:gravity="center_vertical"
-                android:padding="@dimen/spacing_m">
+                android:padding="@dimen/spacing_m"
+                android:drawableStart="@drawable/ic_home"
+                android:drawablePadding="@dimen/spacing_m"
+                android:text="Menú"
+                android:textColor="@color/shadow"
+                android:textSize="14sp" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_pacientes"
-                    android:paddingHorizontal="@dimen/spacing_m" />
-
-                <TextView
-                    android:id="@+id/navPacientes"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Pacientes"
-                    android:textColor="@color/primary"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/navPacientes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="@dimen/spacing_m">
+                android:padding="@dimen/spacing_m"
+                android:drawableStart="@drawable/ic_pacientes"
+                android:drawablePadding="@dimen/spacing_m"
+                android:text="Pacientes"
+                android:textColor="@color/shadow"
+                android:textSize="14sp" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_calendar"
-                    android:paddingHorizontal="@dimen/spacing_m" />
-
-                <TextView
-                    android:id="@+id/navTurnos"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Turnos"
-                    android:textColor="@color/shadow"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/navTurnos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="@dimen/spacing_m">
+                android:padding="@dimen/spacing_m"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="@dimen/spacing_m"
+                android:text="Turnos"
+                android:textColor="@color/shadow"
+                android:textSize="14sp" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_administracion"
-                    android:paddingHorizontal="@dimen/spacing_m" />
-
-                <TextView
-                    android:id="@+id/navAdministracion"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Administración"
-                    android:textColor="@color/shadow"
-                    android:textSize="14sp" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/navAdministracion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="@dimen/spacing_m"
+                android:drawableStart="@drawable/ic_administracion"
+                android:drawablePadding="@dimen/spacing_m"
+                android:text="Administración"
+                android:textColor="@color/shadow"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -231,12 +212,33 @@
             android:layout_height="1dp"
             android:background="@color/shadow" />
 
+        <!-- Barra de búsqueda y botón -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <EditText
+                android:id="@+id/edtBuscarPaciente"
+                android:layout_width="400dp"
+                android:layout_height="42dp"
+                android:hint="Buscar por Nombre o DNI..."
+                android:inputType="text"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:paddingHorizontal="@dimen/spacing_m"
+                android:backgroundTint="@color/blur" />
+
+        </LinearLayout>
+
         <!-- Área interactiva para cada Activity -->
         <FrameLayout
             android:id="@+id/contenedorContenido"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:background="@color/white" />
 
     </LinearLayout>

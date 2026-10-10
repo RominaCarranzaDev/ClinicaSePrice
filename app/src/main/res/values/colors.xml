@@ -5,9 +5,9 @@
     <color name="secondary">#02D0EB</color>
 
     <!-- Neutros -->
-    <color name="black">#0F172A</color>
-    <color name="white">#F5F5F5</color>
-    <color name="shadow">#475569</color>
+    <color name="black">#020818</color>
+    <color name="white">#FCFCFC</color>
+    <color name="shadow">#5f728c</color>
     <color name="blur">#E0F2FE</color>
 
     <!-- Estados -->
