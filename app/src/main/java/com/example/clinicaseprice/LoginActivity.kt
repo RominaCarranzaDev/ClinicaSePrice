@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.clinicaseprice.model.Usuario
 
 
 class LoginActivity : AppCompatActivity() {
@@ -23,26 +24,60 @@ class LoginActivity : AppCompatActivity() {
             val usuarioEscrito = etUsuario.text.toString().trim()
             val claveEscrita = etContrasena.text.toString().trim()
 
+            // Validación de los campos requeridos
             if (usuarioEscrito.isEmpty() || claveEscrita.isEmpty()) {
-                Toast.makeText(this, "Por favor, completa usuario y contraseña", Toast.LENGTH_SHORT)
-                    .show()
+
+                Toast.makeText(
+                    this,
+                    "Por favor, completa usuario y contraseña",
+                    Toast.LENGTH_SHORT
+                ).show()
+
             } else {
+                // Validación existencia de usuario
+                val usuarioEncontrado = usuarios.find {
+                    it.nombreUsuario == usuarioEscrito &&
+                            it.clave == claveEscrita
+                }
+                // Autenticación
+                if (usuarioEncontrado != null) {
+                    // Control del nivel de acceso. Autorización
+                    when (usuarioEncontrado.rol) {
 
-                if (usuarioEscrito == "admin" && claveEscrita == "123456") {
+                        "admin" -> {
+                            val intent = Intent(this, MenuActivity::class.java)
+                            startActivity(intent)
+                        }
 
-                    // ¡Los datos son correctos! Hacemos el viaje
-                    val intent = Intent(this, MenuActivity::class.java)
-                    startActivity(intent)
+                        "medico" -> {
+                            val intent = Intent(this, AtencionMedicaActivity::class.java)
+                            startActivity(intent)
+                        }
 
-                    // Destruimos la pantalla de Login
+                        "tecnico" -> {
+                            val intent = Intent(this, EstudioMedicoActivity::class.java)
+                            startActivity(intent)
+                        }
+                    }
+
                     finish()
 
                 } else {
-                    // Si los campos tienen texto, pero le pifió a la contraseña o al correo:
-                    Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT)
-                        .show()
+
+                    Toast.makeText(
+                        this,
+                        "Usuario o contraseña incorrectos",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
     }
+
+    // Lista de usuarios iniciales con distintos roles
+    private val usuarios = listOf(
+        Usuario(1,"admin", "123456", "admin"),
+        Usuario(2,"medico", "1234", "medico"),
+        Usuario(3,"tecnico", "1234", "tecnico")
+    )
 }
