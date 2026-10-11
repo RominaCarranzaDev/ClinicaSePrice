@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:background="@color/white">
 
-    <!-- SIDEBAR  -->
+    <!-- SIDEBAR -->
     <LinearLayout
         android:id="@+id/sidebar"
         android:layout_width="0dp"
@@ -54,10 +54,9 @@
                     android:textSize="11sp" />
 
             </LinearLayout>
-
         </LinearLayout>
 
-        <!-- Linea hr -->
+        <!-- Línea divisoria -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -71,7 +70,7 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/spacing_s"
-            android:paddingVertical="@dimen/spacing_m" >
+            android:paddingVertical="@dimen/spacing_m">
 
             <TextView
                 android:id="@+id/navMenu"
@@ -110,6 +109,18 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/navSalaEspera"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="@dimen/spacing_m"
+                android:drawableStart="@drawable/ic_pacientes"
+                android:drawablePadding="@dimen/spacing_m"
+                android:text="Sala de espera"
+                android:textColor="@color/shadow"
+                android:textSize="14sp" />
+
+            <TextView
                 android:id="@+id/navAdministracion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -123,7 +134,7 @@
 
         </LinearLayout>
 
-        <!-- Linea hr -->
+        <!-- Línea divisoria -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -142,7 +153,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_account_circle"
-                android:paddingHorizontal="@dimen/spacing_s"/>
+                android:paddingHorizontal="@dimen/spacing_s" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -167,12 +178,11 @@
                     android:textColor="@color/shadow" />
 
             </LinearLayout>
-
         </LinearLayout>
 
     </LinearLayout>
 
-    <!--  CONTENIDO PRINCIPAL  -->
+    <!-- CONTENIDO PRINCIPAL -->
     <LinearLayout
         android:id="@+id/contenidoPrincipal"
         android:layout_width="0dp"
@@ -180,7 +190,7 @@
         android:layout_weight="10"
         android:orientation="vertical">
 
-        <!-- Encabezado  -->
+        <!-- Encabezado -->
         <LinearLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
@@ -201,25 +211,27 @@
                 android:id="@+id/txtSubtitulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Subtitle de la sección."
+                android:text="Subtítulo de la sección."
                 style="@style/Subtitle" />
 
         </LinearLayout>
 
-        <!-- Linea hr -->
+        <!-- Línea divisoria -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/shadow" />
 
-        <!-- Barra de búsqueda y botón -->
-
+        <!-- Barra de búsqueda global -->
         <LinearLayout
+            android:id="@+id/layoutBusquedaGlobal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:paddingHorizontal="@dimen/spacing_m"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <EditText
                 android:id="@+id/edtBuscarPaciente"
@@ -234,11 +246,12 @@
 
         </LinearLayout>
 
-        <!-- Área interactiva para cada Activity -->
+        <!-- Área de contenido de cada pantalla -->
         <FrameLayout
             android:id="@+id/contenedorContenido"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:background="@color/white" />
 
     </LinearLayout>

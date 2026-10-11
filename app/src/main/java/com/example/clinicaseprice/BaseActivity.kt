@@ -12,8 +12,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
-
 open class BaseActivity : AppCompatActivity() {
+
     protected lateinit var contenedorContenido: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,13 +26,12 @@ open class BaseActivity : AppCompatActivity() {
         configurarMenu()
     }
 
-    // Configura la navegación compartida
     private fun configurarMenu() {
 
         val navMenu = findViewById<TextView>(R.id.navMenu)
         val navPacientes = findViewById<TextView>(R.id.navPacientes)
         val navTurnos = findViewById<TextView>(R.id.navTurnos)
-        val navAdministracion = findViewById<TextView>(R.id.navAdministracion)
+        val navSalaEspera = findViewById<TextView>(R.id.navSalaEspera)
 
         navMenu.setOnClickListener {
             abrirPantalla(MenuActivity::class.java)
@@ -46,15 +45,13 @@ open class BaseActivity : AppCompatActivity() {
             abrirPantalla(ConsultoriosTurnosActivity::class.java)
         }
 
-        //navAdministracion.setOnClickListener {
-        //    abrirPantalla(AdministracionActivity::class.java)
-        //}
+        navSalaEspera.setOnClickListener {
+            abrirPantalla(SalaEsperaActivity::class.java)
+        }
     }
 
-    // Evita volver a abrir la pantalla actual
-    private fun abrirPantalla(
-        destino: Class<out Activity>
-    ) {
+    private fun abrirPantalla(destino: Class<out Activity>) {
+
         if (javaClass != destino) {
             val intent = Intent(this, destino)
             startActivity(intent)
@@ -62,17 +59,17 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    // Configura el header: título, subtítulo y contenido
     protected fun configurarPantalla(
         titulo: String,
         subtitulo: String,
         layoutContenido: Int,
         opcionActiva: String
     ) {
-        findViewById<TextView>(R.id.txtTitulo).text = titulo
 
+        findViewById<TextView>(R.id.txtTitulo).text = titulo
         findViewById<TextView>(R.id.txtSubtitulo).text = subtitulo
 
+        // La barra de búsqueda queda disponible en todas las pantallas.
         contenedorContenido.removeAllViews()
 
         LayoutInflater.from(this).inflate(
@@ -84,12 +81,12 @@ open class BaseActivity : AppCompatActivity() {
         actualizarMenu(opcionActiva)
     }
 
-    // Resalta la opción del menú correspondiente
     private fun actualizarMenu(opcionActiva: String) {
 
         val opciones = mapOf(
             "pacientes" to findViewById<TextView>(R.id.navPacientes),
             "turnos" to findViewById<TextView>(R.id.navTurnos),
+            "sala_espera" to findViewById<TextView>(R.id.navSalaEspera),
             "administracion" to findViewById<TextView>(R.id.navAdministracion),
             "inicio" to findViewById<TextView>(R.id.navMenu)
         )
@@ -98,31 +95,28 @@ open class BaseActivity : AppCompatActivity() {
 
             val seleccionado = nombre == opcionActiva
 
-            // Color según el estado
             val color = ContextCompat.getColor(
                 this,
                 if (seleccionado) R.color.primary else R.color.shadow
             )
 
-            // Fondo
             elemento.setBackgroundColor(
-                if (seleccionado)
+                if (seleccionado) {
                     ContextCompat.getColor(this, R.color.blur)
-                else
+                } else {
                     Color.TRANSPARENT
+                }
             )
 
-            // Color del texto
             elemento.setTextColor(color)
 
-            // Negrita para la opción seleccionada
             elemento.setTypeface(
                 null,
                 if (seleccionado) Typeface.BOLD else Typeface.NORMAL
             )
 
-            // Color del drawable (ícono)
-            elemento.compoundDrawableTintList = ColorStateList.valueOf(color)
+            elemento.compoundDrawableTintList =
+                ColorStateList.valueOf(color)
         }
     }
 }

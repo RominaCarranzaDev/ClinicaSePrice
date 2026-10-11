@@ -8,7 +8,7 @@
     android:padding="20dp"
     tools:context=".ConsultoriosPacientesActivity">
 
-    <!-- BARRA DE FILTROS (SPINNERS COMPACTOS + BOTÓN) -->
+    <!-- FILTROS -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,6 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <!-- Spinner Estado -->
         <Spinner
             android:id="@+id/spEstado"
             android:layout_width="wrap_content"
@@ -26,7 +25,6 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp" />
 
-        <!-- Spinner Obra Social -->
         <Spinner
             android:id="@+id/spObraSocial"
             android:layout_width="wrap_content"
@@ -37,13 +35,11 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp" />
 
-        <!-- Espaciador flexible -->
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <!-- Botón Nuevo Paciente -->
         <Button
             android:id="@+id/btnNuevoPaciente"
             android:layout_width="wrap_content"
@@ -57,39 +53,38 @@
             android:textSize="13sp" />
     </LinearLayout>
 
-    <!-- TARJETA TABLA DE PACIENTES -->
+    <!-- TABLA DE PACIENTES -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@drawable/bg_card_table"
         android:elevation="1dp"
         android:orientation="vertical"
         android:paddingTop="16dp"
         android:paddingBottom="16dp">
 
-        <!-- ENCABEZADOS DE COLUMNA -->
+        <!-- ENCABEZADOS: MISMO ORDEN Y PESOS QUE LAS FILAS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="16dp"
+            android:paddingStart="12dp"
             android:paddingTop="8dp"
-            android:paddingEnd="16dp"
+            android:paddingEnd="12dp"
             android:paddingBottom="12dp">
 
-            <!-- Nombre Completo (Alineado a la izquierda) -->
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2.2"
-                android:gravity="start|center_vertical"
-                android:text="Nombre Completo"
+                android:gravity="start"
+                android:text="Nombre completo"
                 android:textColor="#475569"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <!-- DNI (Centrado) -->
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -100,7 +95,6 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <!-- Teléfono (Centrado) -->
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -111,49 +105,51 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <!-- Obra Social (Centrado) -->
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.3"
                 android:gravity="center"
-                android:text="Obra Social"
+                android:text="Obra social"
                 android:textColor="#475569"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <!-- Último Turno (Centrado) -->
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:gravity="center"
-                android:text="Último Turno"
-                android:textColor="#475569"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <!-- Estado (Centrado) -->
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.1"
+                android:layout_weight="1.4"
                 android:gravity="center"
                 android:text="Estado"
                 android:textColor="#475569"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <!-- Ficha (Centrado) -->
-            <TextView
-                android:layout_width="0dp"
+            <!-- Espacio reservado para los dos botones -->
+            <LinearLayout
+                android:layout_width="76dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
                 android:gravity="center"
-                android:text="Ficha"
-                android:textColor="#475569"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Ficha"
+                    android:textColor="#475569"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Editar"
+                    android:textColor="#475569"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
 
         <View
@@ -161,11 +157,13 @@
             android:layout_height="1dp"
             android:background="#E2E8F0" />
 
-        <!-- Listado RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPacientes"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false" />
+
     </LinearLayout>
 
 </LinearLayout>
