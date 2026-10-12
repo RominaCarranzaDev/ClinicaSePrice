@@ -219,7 +219,7 @@ android:background="@color/white">
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_weight="2"
                     android:orientation="vertical">
 
                     <TextView
@@ -266,7 +266,8 @@ android:background="@color/white">
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/spacing_m">
 
                     <Button
                         android:id="@+id/btnHistoriaPrevia"
@@ -296,6 +297,7 @@ android:background="@color/white">
                         android:textSize="@dimen/text_small" />
 
                 </LinearLayout>
+
 
             </LinearLayout>
 
@@ -329,10 +331,11 @@ android:background="@color/white">
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
 
+
                                 <TextView
                                     android:layout_width="100dp"
                                     android:layout_height="125dp"
-                                    android:layout_marginEnd="@dimen/spacing_s"
+                                    android:layout_marginEnd="8dp"
                                     android:padding="@dimen/spacing_s"
                                     android:background="@color/blur"
                                     android:text="PRESIÓN ARTERIAL\n\n128/84 mmHg\n\nNormal"
@@ -342,17 +345,7 @@ android:background="@color/white">
                                 <TextView
                                     android:layout_width="100dp"
                                     android:layout_height="125dp"
-                                    android:layout_marginEnd="@dimen/spacing_s"
-                                    android:padding="@dimen/spacing_s"
-                                    android:background="@color/blur"
-                                    android:text="PRESIÓN ARTERIAL\n\n128/84 mmHg\n\nNormal"
-                                    android:textColor="@color/primary"
-                                    android:textSize="@dimen/text_small" />
-
-                                <TextView
-                                    android:layout_width="100dp"
-                                    android:layout_height="125dp"
-                                    android:layout_marginEnd="@dimen/spacing_s"
+                                    android:layout_marginEnd="8dp"
                                     android:padding="@dimen/spacing_s"
                                     android:background="@color/blur"
                                     android:text="FRECUENCIA CARDÍACA\n\n74 lpm\n\nRítmico"
@@ -362,17 +355,7 @@ android:background="@color/white">
                                 <TextView
                                     android:layout_width="100dp"
                                     android:layout_height="125dp"
-                                    android:layout_marginEnd="@dimen/spacing_s"
-                                    android:padding="@dimen/spacing_s"
-                                    android:background="@color/blur"
-                                    android:text="PESO / IMC\n\n78.4 kg\n\nIMC 24.8"
-                                    android:textColor="@color/primary"
-                                    android:textSize="@dimen/text_small" />
-
-                                <TextView
-                                    android:layout_width="100dp"
-                                    android:layout_height="125dp"
-                                    android:layout_marginEnd="@dimen/spacing_s"
+                                    android:layout_marginEnd="8dp"
                                     android:padding="@dimen/spacing_s"
                                     android:background="@color/blur"
                                     android:text="TEMP. AXILAR\n\n36.6 °C"
@@ -382,22 +365,14 @@ android:background="@color/white">
                                 <TextView
                                     android:layout_width="100dp"
                                     android:layout_height="125dp"
-                                    android:layout_marginEnd="@dimen/spacing_s"
+                                    android:layout_marginEnd="8dp"
                                     android:padding="@dimen/spacing_s"
                                     android:background="@color/blur"
                                     android:text="SAT O2\n\n98 %\n\nAire amb."
                                     android:textColor="@color/primary"
                                     android:textSize="@dimen/text_small" />
 
-                                <TextView
-                                    android:layout_width="150dp"
-                                    android:layout_height="125dp"
-                                    android:layout_marginEnd="@dimen/spacing_s"
-                                    android:padding="@dimen/spacing_s"
-                                    android:background="@color/danger"
-                                    android:text="⚠ FACTORES DE RIESGO\n\nAlergia: Penicilina\n\nHipertensión arterial"
-                                    android:textColor="@color/danger_text"
-                                    android:textSize="@dimen/text_small" />
+
 
                             </LinearLayout>
 
@@ -523,6 +498,33 @@ android:background="@color/white">
                     android:orientation="vertical"
                     android:padding="@dimen/spacing_m"
                     android:background="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="125dp"
+                            android:layout_marginEnd="8dp"
+                            android:padding="@dimen/spacing_s"
+                            android:background="@color/blur"
+                            android:text="GRUPO SANGUINEO\n\n0 -\n\nFactor RH negativo"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/text_small" />
+
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="125dp"
+                            android:layout_marginEnd="8dp"
+                            android:padding="@dimen/spacing_s"
+                            android:background="@color/danger"
+                            android:text="⚠ FACTORES DE RIESGO\n\nAlergia: Penicilina\n\nHipertensión arterial"
+                            android:textColor="@color/danger_text"
+                            android:textSize="@dimen/text_small" />
+                    </LinearLayout>
+
 
                     <TextView
                         android:layout_width="match_parent"
