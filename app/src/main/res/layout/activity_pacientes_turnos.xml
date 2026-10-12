@@ -6,17 +6,32 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="60sp"
-        android:text="Agenda de Turnos" />
+        android:text="Agenda de Turnos"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:paddingBottom="16dp" />
 
+    <Button
+        android:id="@+id/btnNuevoTurno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+ Asignar turno"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1976D2"
+        android:textStyle="bold" />
 
-    <!-- Tabla o listado de pacientes -->
+    <Spinner
+        android:id="@+id/spEstadoTurno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPacientes"
+        android:id="@+id/rvTurnos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

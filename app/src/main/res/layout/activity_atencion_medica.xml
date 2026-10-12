@@ -35,7 +35,18 @@ android:background="@color/white">
                 android:text="Médica clínica"
                 android:textColor="@color/shadow"
                 android:textSize="12sp" />
+
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_exit"
+            android:contentDescription="Cerrar sesión"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="10dp"
+            android:scaleType="centerInside" />
 
         <Space
             android:layout_width="0dp"
@@ -77,32 +88,22 @@ android:background="@color/white">
                 android:gravity="center_vertical"
                 android:paddingHorizontal="@dimen/spacing_s"
                 android:layout_marginBottom="@dimen/spacing_s"
-                android:text="CONSULTORIO 102 • ATENDIENDO"
+                android:text="CONSULTORIO 1"
                 android:textColor="@color/primary"
                 android:textStyle="bold"
                 android:textSize="@dimen/text_small"
                 android:background="@color/blur" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="@dimen/spacing_s"
-                android:layout_marginBottom="@dimen/spacing_m"
-                android:text="◷ Tiempo de consulta: 12:37"
-                android:textColor="@color/primary"
-                android:textSize="@dimen/text_small" />
+
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_s"
+                android:layout_marginBottom="@dimen/spacing_m"
                 android:text="  Sala de Espera"
                 android:drawableStart="@drawable/ic_pacientes"
-                android:textColor="@color/primary"
-                android:drawableTint="@color/primary"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_subtitle" />
+                android:textColor="@color/black"
+                style="@style/Subtitle" />
 
             <Button
                 android:id="@+id/btnLlamarSiguiente"
@@ -115,6 +116,7 @@ android:background="@color/white">
                 android:layout_marginBottom="@dimen/spacing_s"/>
 
             <TextView
+                android:id="@+id/tvCantidadPacientesEnEspera"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
@@ -124,74 +126,31 @@ android:background="@color/white">
                 android:textSize="@dimen/text_small"
                 android:layout_marginBottom="@dimen/spacing_m"/>
 
-            <!-- Lista de pacientes en espera. Solo los proximos 5 -->
+            <!-- Lista de pacientes en espera. Solo los proximos 3 -->
             <ScrollView
+                android:id="@+id/svListadoSalaEspera"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:fillViewport="true">
 
-                <LinearLayout
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvListadoSalaEspera"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/spacing_s"
-                        android:background="@color/blur"
-                        android:text="● 09:30 - En curso\n\nGonzalo Morales"
-                        android:textColor="@color/primary"
-                        android:textSize="@dimen/text_small" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/spacing_s"
-                        android:background="@color/white"
-                        android:text="● 09:45 - Demora +25 min\n\nBeatriz Casares"
-                        android:textColor="@color/danger_text"
-                        android:textSize="@dimen/text_small" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/spacing_s"
-                        android:background="@color/white"
-                        android:text="● 10:00 - Espera 18 min\n\nEsteban Dell'Acqua"
-                        android:textColor="@color/primary"
-                        android:textSize="@dimen/text_small"  />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/spacing_s"
-                        android:background="@color/white"
-                        android:text="● 10:15 - En horario\n\nMariana V. Zaldívar"
-                        android:textColor="@color/primary"
-                        android:textSize="@dimen/text_small" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/spacing_s"
-                        android:background="@color/white"
-                        android:text="● 10:30 - Espera 18 min\n\nLucas Benjamín Gómez"
-                        android:textColor="@color/primary"
-                        android:textSize="@dimen/text_small" />
-
-                </LinearLayout>
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false" />
 
             </ScrollView>
 
         </LinearLayout>
 
-        <!-- Contenedor -->
+        <!-- Paciente, datos e HC -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="10"
+            android:layout_weight="6"
             android:orientation="vertical">
 
             <!-- Columna Superior PACIENTE  -->
@@ -205,6 +164,7 @@ android:background="@color/white">
 
                 <!-- Iniciales -->
                 <TextView
+                    android:id="@+id/tvInicialesPaciente"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginEnd="@dimen/spacing_m"
@@ -223,6 +183,7 @@ android:background="@color/white">
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tvNombrePaciente"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
@@ -267,421 +228,496 @@ android:background="@color/white">
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:paddingHorizontal="@dimen/spacing_m">
+                    android:padding="@dimen/spacing_s"
+                    android:gravity="center">
 
                     <Button
-                        android:id="@+id/btnHistoriaPrevia"
+                        android:id="@+id/btnHistoria"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/blur"
-                        android:text="Ver HC previa"
-                        android:textColor="@color/primary"
-                        android:textSize="@dimen/text_small" />
-
-                    <Button
-                        android:id="@+id/btnOrdenMedica"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/blur"
-                        android:text="Orden médica"
-                        android:textColor="@color/primary"
-                        android:textSize="@dimen/text_small" />
-
-                    <Button
-                        android:id="@+id/btnRecetaDigital"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/blur"
-                        android:text="Receta digital"
+                        android:text="Ver HC"
                         android:textColor="@color/primary"
                         android:textSize="@dimen/text_small" />
 
                 </LinearLayout>
-
 
             </LinearLayout>
 
-            <!-- Columna Inferior PACIENTE  -->
+            <!-- Contenedor HC -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <!-- Contenedor HC -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:orientation="vertical">
-
-                    <ScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:fillViewport="true">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:padding="@dimen/spacing_m">
-
-                            <!-- Signos vitales -->
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-
-                                <TextView
-                                    android:layout_width="100dp"
-                                    android:layout_height="125dp"
-                                    android:layout_marginEnd="8dp"
-                                    android:padding="@dimen/spacing_s"
-                                    android:background="@color/blur"
-                                    android:text="PRESIÓN ARTERIAL\n\n128/84 mmHg\n\nNormal"
-                                    android:textColor="@color/primary"
-                                    android:textSize="@dimen/text_small" />
-
-                                <TextView
-                                    android:layout_width="100dp"
-                                    android:layout_height="125dp"
-                                    android:layout_marginEnd="8dp"
-                                    android:padding="@dimen/spacing_s"
-                                    android:background="@color/blur"
-                                    android:text="FRECUENCIA CARDÍACA\n\n74 lpm\n\nRítmico"
-                                    android:textColor="@color/primary"
-                                    android:textSize="@dimen/text_small" />
-
-                                <TextView
-                                    android:layout_width="100dp"
-                                    android:layout_height="125dp"
-                                    android:layout_marginEnd="8dp"
-                                    android:padding="@dimen/spacing_s"
-                                    android:background="@color/blur"
-                                    android:text="TEMP. AXILAR\n\n36.6 °C"
-                                    android:textColor="@color/primary"
-                                    android:textSize="@dimen/text_small" />
-
-                                <TextView
-                                    android:layout_width="100dp"
-                                    android:layout_height="125dp"
-                                    android:layout_marginEnd="8dp"
-                                    android:padding="@dimen/spacing_s"
-                                    android:background="@color/blur"
-                                    android:text="SAT O2\n\n98 %\n\nAire amb."
-                                    android:textColor="@color/primary"
-                                    android:textSize="@dimen/text_small" />
-
-
-
-                            </LinearLayout>
-
-                            <!-- Historia clínica -->
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:padding="@dimen/spacing_m"
-                                android:background="@color/white"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="☷ Historia Clínica"
-                                    android:textColor="@color/primary"
-                                    android:textStyle="bold"
-                                    android:textSize="@dimen/text_subtitle"
-                                    android:layout_marginBottom="@dimen/spacing_m"/>
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="1. ANAMNESIS ACTUAL"
-                                    android:textColor="@color/primary"
-                                    android:textStyle="bold"
-                                    android:textSize="@dimen/text_small"
-                                    android:layout_marginBottom="@dimen/spacing_s" />
-
-                                <EditText
-                                    android:id="@+id/etAnamnesis"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="100dp"
-                                    android:padding="@dimen/spacing_s"
-                                    android:background="@color/blur"
-                                    android:hint="Describir el motivo de consulta y los síntomas..."
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/text_small"
-                                    android:inputType="textMultiLine"
-                                    android:gravity="top|start"
-                                    android:layout_marginBottom="@dimen/spacing_m" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="2. EXAMEN FÍSICO"
-                                    android:textColor="@color/primary"
-                                    android:textStyle="bold"
-                                    android:textSize="@dimen/text_small"
-                                    android:layout_marginBottom="@dimen/spacing_s" />
-
-                                <EditText
-                                    android:id="@+id/etExamenFisico"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="100dp"
-                                    android:padding="@dimen/spacing_s"
-                                    android:background="@color/blur"
-                                    android:hint="Registrar los hallazgos del examen físico..."
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/text_small"
-                                    android:inputType="textMultiLine"
-                                    android:gravity="top|start"
-                                    android:layout_marginBottom="@dimen/spacing_m" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="3. RECOMENDACIóN Y PLAN TERAPÉUTICO"
-                                    android:textColor="@color/primary"
-                                    android:textStyle="bold"
-                                    android:textSize="@dimen/text_small"
-                                    android:layout_marginBottom="@dimen/spacing_s" />
-
-                                <EditText
-                                    android:id="@+id/etPlanTerapeutico"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="100dp"
-                                    android:padding="@dimen/spacing_s"
-                                    android:background="@color/blur"
-                                    android:hint="Indicar el plan terapéutico..."
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/text_small"
-                                    android:inputType="textMultiLine"
-                                    android:gravity="top|start"
-                                    android:layout_marginBottom="@dimen/spacing_m" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:text="Quedará registrada la atención médica\nSe emitirá Receta y Orden Digital"
-                                        android:gravity="center"
-                                        android:paddingHorizontal="@dimen/spacing_m"/>
-
-                                    <Button
-                                        android:id="@+id/btnFinalizarConsulta"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="54dp"
-                                        android:text="Finalizar consulta y firmar digitalmente"
-                                        android:textColor="@color/white"
-                                        android:textSize="13sp"
-                                        android:backgroundTint="@color/primary" />
-
-                                </LinearLayout>
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </ScrollView>
-
-                </LinearLayout>
-
-                <!-- COLUMNA DERECHA PRESCRIPCIONES Y ÓRDENES  -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_m"
-                    android:background="#FFFFFF">
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="120dp"
-                            android:layout_height="125dp"
-                            android:layout_marginEnd="8dp"
-                            android:padding="@dimen/spacing_s"
-                            android:background="@color/blur"
-                            android:text="GRUPO SANGUINEO\n\n0 -\n\nFactor RH negativo"
-                            android:textColor="@color/primary"
-                            android:textSize="@dimen/text_small" />
-
-                        <TextView
-                            android:layout_width="150dp"
-                            android:layout_height="125dp"
-                            android:layout_marginEnd="8dp"
-                            android:padding="@dimen/spacing_s"
-                            android:background="@color/danger"
-                            android:text="⚠ FACTORES DE RIESGO\n\nAlergia: Penicilina\n\nHipertensión arterial"
-                            android:textColor="@color/danger_text"
-                            android:textSize="@dimen/text_small" />
-                    </LinearLayout>
-
-
-                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="▤ Prescripción y Órdenes"
-                        android:textColor="@color/primary"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="@dimen/spacing_s"/>
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
 
-                    <ScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
-
+                        <!-- Signos vitales -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
-                            <!-- Sección medicaciones previas -->
-                            <TextView
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="♧ PRESCRIPCIONES"
-                                android:textColor="@color/shadow"
-                                android:textStyle="bold"
-                                android:textSize="@dimen/text_small"
-                                android:layout_marginBottom="8dp" />
+                                android:orientation="horizontal"
+                                android:layout_marginBottom="@dimen/spacing_s">
 
-                            <EditText
-                                android:id="@+id/etBuscarMedicamento"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:hint="Buscar principio activo..."
-                                android:inputType="text"
-                                android:textSize="@dimen/text_small"
-                                android:singleLine="true"
-                                android:paddingHorizontal="@dimen/spacing_s"
-                                android:backgroundTint="@color/shadow"
-                                android:layout_marginBottom="@dimen/spacing_s" />
+                                <!-- Presión arterial -->
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:orientation="horizontal"
+                                    android:padding="@dimen/spacing_s"
+                                    android:background="@color/blur">
 
-                            <TextView
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="PRESIÓN ARTERIAL: "
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/text_small" />
+
+                                    <EditText
+                                        android:id="@+id/etPresionArterialMax"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="120"
+                                        android:textColor="@color/primary"
+                                        android:textSize="@dimen/text_small"
+                                        android:inputType="text"
+                                        android:singleLine="true"
+                                        android:backgroundTint="@color/black" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text=" / "
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/text_small" />
+
+                                    <EditText
+                                        android:id="@+id/etPresionArterialMin"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="80"
+                                        android:textColor="@color/primary"
+                                        android:textSize="@dimen/text_small"
+                                        android:inputType="text"
+                                        android:singleLine="true"
+                                        android:backgroundTint="@color/black" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="mmHg"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/text_small" />
+
+                                </LinearLayout>
+
+                                <!-- Frecuencia cardíaca -->
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:orientation="horizontal"
+                                    android:padding="@dimen/spacing_s"
+                                    android:background="@color/blur">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="FRECUENCIA CARDÍACA: "
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/text_small" />
+
+                                    <EditText
+                                        android:id="@+id/etFrecuenciaCardiaca"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="74"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/text_small"
+                                        android:inputType="number"
+                                        android:singleLine="true"
+                                        android:backgroundTint="@color/black" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text=" lpm"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/text_small" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginBottom="@dimen/spacing_s">
+
+                                <!-- Temperatura  -->
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:orientation="horizontal"
+                                    android:padding="@dimen/spacing_s"
+                                    android:background="@color/blur">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="TEMP. CORPORAL: "
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/text_small" />
+
+                                    <EditText
+                                        android:id="@+id/etTemperatura"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="36.6"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/text_small"
+                                        android:inputType="numberDecimal"
+                                        android:singleLine="true"
+                                        android:backgroundTint="@color/black" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text=" °C"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/text_small" />
+
+                                </LinearLayout>
+
+                                <!-- Saturación de oxígeno -->
+                                <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
                                 android:padding="@dimen/spacing_s"
-                                android:background="@color/blur"
-                                android:text="Aspirina Protect 100 mg\n\nÁcido acetilsalicílico · Comp. x 30\n\nPosología: 1 comprimido diario post almuerzo."
-                                android:textColor="@color/primary"
-                                android:textSize="@dimen/text_small"
-                                android:layout_marginBottom="@dimen/spacing_s"/>
+                                android:background="@color/blur">
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:padding="@dimen/spacing_s"
-                                android:background="@color/blur"
-                                android:text="Atorvastatina 40 mg\n\nLipitor / Genérico · Comp. x 30\n\nPosología: 1 comprimido por la noche."
-                                android:textColor="@color/primary"
-                                android:textSize="@dimen/text_small"
-                                android:layout_marginBottom="@dimen/spacing_s" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="SATURACION O2: % "
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/text_small" />
 
-                            <Button
-                                android:id="@+id/btnAgregarFarmaco"
-                                android:layout_width="match_parent"
-                                android:layout_height="42dp"
-                                android:text="+ Agregar fármaco"
-                                android:textSize="@dimen/text_small"
-                                android:textColor="@color/primary"
-                                android:backgroundTint="@color/blur"
-                                android:layout_marginBottom="@dimen/spacing_s"/>
+                                <EditText
+                                    android:id="@+id/etSaturacionOxigeno"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="98"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/text_small"
+                                    android:inputType="number"
+                                    android:singleLine="true"
+                                    android:backgroundTint="@color/black" />
 
-                            <!-- Sección estudios previos -->
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="♧ ESTUDIOS DE LABORATORIO E IMÁGENES"
-                                android:textColor="@color/shadow"
-                                android:textStyle="bold"
-                                android:textSize="@dimen/text_small"
-                                android:layout_marginBottom="8dp" />
+                            </LinearLayout>
 
-                            <EditText
-                                android:id="@+id/etBuscarEstudio"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:inputType="text"
-                                android:hint="Buscar estudio..."
-                                android:textSize="@dimen/text_small"
-                                android:singleLine="true"
-                                android:paddingHorizontal="@dimen/spacing_s"
-                                android:backgroundTint="@color/shadow"
-                                android:layout_marginBottom="@dimen/spacing_s" />
-
-                            <CheckBox
-                                android:id="@+id/cbElectrocardiograma"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Electrocardiograma 12D reposo"
-                                android:textColor="@color/primary"
-                                android:textSize="@dimen/text_small"
-                                android:background="@color/blur"
-                                android:padding="4dp"
-                                android:layout_marginBottom="8dp"
-                                android:checked="true"
-                                android:buttonTint="@color/primary" />
-
-                            <CheckBox
-                                android:id="@+id/cbPerfilLipidico"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Perfil lipídico completo + glucemia"
-                                android:textColor="@color/primary"
-                                android:textSize="@dimen/text_small"
-                                android:background="@color/blur"
-                                android:padding="4dp"
-                                android:layout_marginBottom="8dp" />
-
-                            <CheckBox
-                                android:id="@+id/cbEcocardiograma"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Ecocardiograma Doppler color"
-                                android:textColor="@color/primary"
-                                android:textSize="@dimen/text_small"
-                                android:background="@color/blur"
-                                android:padding="4dp"
-                                android:layout_marginBottom="8dp" />
-
-                            <CheckBox
-                                android:id="@+id/cbAngiotomografia"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Angiotomografía coronaria (TAC)"
-                                android:textColor="@color/primary"
-                                android:textSize="@dimen/text_small"
-                                android:background="@color/blur"
-                                android:padding="4dp"
-                                android:layout_marginBottom="8dp" />
-
-                            <Button
-                                android:id="@+id/btnEmitirOrdenes"
-                                android:layout_width="match_parent"
-                                android:layout_height="42dp"
-                                android:text="Emitir órdenes"
-                                android:textSize="@dimen/text_small"
-                                android:textColor="@color/primary"
-                                android:backgroundTint="@color/blur"
-                                android:layout_marginBottom="@dimen/spacing_s" />
+                            </LinearLayout>
 
                         </LinearLayout>
 
-                    </ScrollView>
+                        <!-- Historia clínica -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/spacing_m"
+                            android:background="@color/white"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="☷ Historia Clínica"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/text_subtitle"
+                                android:layout_marginBottom="@dimen/spacing_m"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Anamnesis"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/text_small"
+                                android:layout_marginBottom="@dimen/spacing_s" />
+
+                            <EditText
+                                android:id="@+id/etAnamnesis"
+                                android:layout_width="match_parent"
+                                android:layout_height="80dp"
+                                android:padding="@dimen/spacing_s"
+                                android:background="@color/blur"
+                                android:hint="Describir el motivo de consulta y los síntomas..."
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/text_small"
+                                android:inputType="textMultiLine"
+                                android:gravity="top|start"
+                                android:layout_marginBottom="@dimen/spacing_m" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Observaciones"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/text_small"
+                                android:layout_marginBottom="@dimen/spacing_s" />
+
+                            <EditText
+                                android:id="@+id/etObservaciones"
+                                android:layout_width="match_parent"
+                                android:layout_height="80dp"
+                                android:padding="@dimen/spacing_s"
+                                android:background="@color/blur"
+                                android:hint="Registrar las observaciones del examen físico y recomendaciones..."
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/text_small"
+                                android:inputType="textMultiLine"
+                                android:gravity="top|start"
+                                android:layout_marginBottom="@dimen/spacing_m" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Diagnóstico"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/text_small"
+                                android:layout_marginBottom="@dimen/spacing_s" />
+
+                            <EditText
+                                android:id="@+id/etDiagnostico"
+                                android:layout_width="match_parent"
+                                android:layout_height="80dp"
+                                android:padding="@dimen/spacing_s"
+                                android:background="@color/blur"
+                                android:hint="Registrar las observaciones del examen físico y recomendaciones..."
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/text_small"
+                                android:inputType="textMultiLine"
+                                android:gravity="top|start"
+                                android:layout_marginBottom="@dimen/spacing_m" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:text="Quedará registrada la atención médica\nSe emitirá Receta y Orden Digital"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/text_small"
+                                    android:paddingHorizontal="@dimen/spacing_m"/>
+
+                                <Button
+                                    android:id="@+id/btnFinalizarConsulta"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="54dp"
+                                    android:text="Finalizar consulta y firmar digitalmente"
+                                    android:textColor="@color/white"
+                                    android:textSize="13sp"
+                                    android:backgroundTint="@color/primary" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </ScrollView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- PRESCRIPCIONES Y ÓRDENES  -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_m"
+            android:background="@color/white">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:padding="@dimen/spacing_s"
+                    android:background="@color/blur"
+                    android:text="GRUPO SANGUINEO: 0 -\n\nFactor RH negativo"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_small" />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_m"
+                    android:padding="@dimen/spacing_s"
+                    android:background="@color/danger"
+                    android:text="⚠ FACTORES DE RIESGO\n\nAlergia: Penicilina\n\nHipertensión arterial"
+                    android:textColor="@color/danger_text"
+                    android:textSize="@dimen/text_small" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="▤ Prescripción y Órdenes"
+                android:textColor="@color/primary"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_body"
+                android:layout_marginBottom="@dimen/spacing_s"/>
+
+            <!-- Sección medicaciones previas -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="♧ PRESCRIPCIONES"
+                android:textColor="@color/shadow"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_small"
+                android:layout_marginBottom="8dp" />
+
+
+            <AutoCompleteTextView
+                android:id="@+id/etBuscarMedicamento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Buscar principio activo..."
+                android:inputType="text"
+                android:textSize="@dimen/text_small"
+                android:singleLine="true"
+                android:paddingHorizontal="@dimen/spacing_s"
+                android:backgroundTint="@color/shadow"
+                android:layout_marginBottom="@dimen/spacing_s"
+                android:completionThreshold="1"
+                android:dropDownHeight="wrap_content"
+                android:dropDownVerticalOffset="4dp" />
+
+            <ScrollView
+                android:id="@+id/svListadoPrescipciones"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2">
+
+                <LinearLayout
+                    android:id="@+id/llListadoPrescripciones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="@dimen/spacing_m" >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_s"
+                        android:background="@drawable/bg_card_default"
+                        android:padding="@dimen/spacing_s"
+                        android:text="Aspirina Protect 100 mg\n\nÁcido acetilsalicílico · Comp. x 30\n\nPosología: 1 comprimido diario post almuerzo."
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_small" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/spacing_s"
+                        android:background="@drawable/bg_card_default"
+                        android:text="Atorvastatina 40 mg\n\nLipitor / Genérico · Comp. x 30\n\nPosología: 1 comprimido por la noche."
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_small"/>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </ScrollView>
+
+            <!-- Sección estudios previos -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="♧ ESTUDIOS DE LABORATORIO E IMÁGENES"
+                android:textColor="@color/shadow"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_small"
+                android:layout_marginBottom="8dp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/etBuscarEstudio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="Buscar estudio..."
+                android:textSize="@dimen/text_small"
+                android:singleLine="true"
+                android:paddingHorizontal="@dimen/spacing_s"
+                android:backgroundTint="@color/shadow"
+                android:layout_marginBottom="@dimen/spacing_s"
+                android:completionThreshold="1"
+                android:dropDownHeight="wrap_content"
+                android:dropDownVerticalOffset="4dp" />
+
+            <ScrollView
+                android:id="@+id/svListadoEstudios"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:id="@+id/llListadoEstudios"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="● Electrocardiograma 12D reposo"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_small"
+                        android:padding="@dimen/spacing_s"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/bg_card_default"
+                        />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="● Ecocardiograma Doppler color"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_small"
+                        android:padding="@dimen/spacing_s"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/bg_card_default"  />
+
+                </LinearLayout>
+
+            </ScrollView>
+
+
 
         </LinearLayout>
 
