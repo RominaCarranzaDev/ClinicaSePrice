@@ -43,7 +43,7 @@ class ConsultoriosPacientesActivity : BaseActivity() {
         spObraSocial = findViewById(R.id.spObraSocial)
         btnNuevoPaciente = findViewById(R.id.btnNuevoPaciente)
 
-        // Busca la barra original ubicada en activity_base.xml.
+
         edtBuscarPaciente = findViewById(R.id.edtBuscarPaciente)
 
         configurarRecyclerView()

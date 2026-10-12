@@ -47,14 +47,14 @@ class PacienteAdapter(
     ) {
         val paciente = listaPacientes[position]
 
-        // Mostrar únicamente el dato correspondiente a cada columna.
+
         holder.tvNombre.text = paciente.nombreCompleto
         holder.tvDni.text = paciente.dni
         holder.tvTelefono.text = paciente.telefono
         holder.tvObraSocial.text = paciente.obraSocial
         holder.tvEstado.text = paciente.estado.uppercase()
 
-        // Colores diferentes según el estado.
+
         val (colorTexto, colorFondo) = when (
             paciente.estado.trim().uppercase()
         ) {
@@ -91,7 +91,7 @@ class PacienteAdapter(
 
         holder.tvEstado.setTextColor(colorTexto)
 
-        // Mantener la forma redondeada de la etiqueta.
+
         val fondo = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = 12f
@@ -99,7 +99,7 @@ class PacienteAdapter(
         }
         holder.tvEstado.background = fondo
 
-        // Acciones independientes de cada control.
+
         holder.tvEstado.setOnClickListener {
             onEstadoClick(paciente)
         }

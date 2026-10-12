@@ -26,7 +26,7 @@ class AtencionMedicaActivity : AppCompatActivity() {
     private lateinit var tvNombrePaciente: TextView
     private lateinit var tvInicialesPaciente: TextView
 
-    // Contador de pacientes
+
     private lateinit var tvCantidadPacientes: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,7 +111,7 @@ class AtencionMedicaActivity : AppCompatActivity() {
             etBuscarEstudio.showDropDown()
         }
 
-        // Contenedores de tarjetas
+
         val llListadoPrescripciones =
             findViewById<LinearLayout>(
                 R.id.llListadoPrescripciones
@@ -122,7 +122,6 @@ class AtencionMedicaActivity : AppCompatActivity() {
                 R.id.llListadoEstudios
             )
 
-        // Agregar medicamento al seleccionarlo
         etBuscarMedicamento.setOnItemClickListener {
                 _, _, position, _ ->
 
