@@ -113,4 +113,12 @@ class SalaEsperaActivity : BaseActivity() {
                 "No se encontraron pacientes con esa búsqueda."
             }
     }
+   // Actualizá la sala de espera al volver a la pantalla
+    override fun onResume() {
+        super.onResume()
+
+        if (::edtBuscarPaciente.isInitialized) {
+            filtrarPacientes()
+        }
+    }
 }

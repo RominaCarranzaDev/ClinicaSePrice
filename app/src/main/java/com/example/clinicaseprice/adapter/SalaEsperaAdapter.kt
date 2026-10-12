@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class SalaEsperaAdapter(
-    private val pacientes: List<Turno>
+    private var pacientes: List<Turno>
 ) : RecyclerView.Adapter<SalaEsperaAdapter.PacienteViewHolder>() {
 
     class PacienteViewHolder(itemView: View) :
@@ -46,4 +46,8 @@ class SalaEsperaAdapter(
     }
 
     override fun getItemCount(): Int = pacientes.size
+    fun actualizarLista(nuevaLista: List<Turno>) {
+        pacientes = nuevaLista
+        notifyDataSetChanged()
+    }
 }

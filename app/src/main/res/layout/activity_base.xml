@@ -178,6 +178,17 @@
                     android:textColor="@color/shadow" />
 
             </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnCerrarSesion"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_exit"
+                android:contentDescription="Cerrar sesión"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                android:padding="10dp" />
+
         </LinearLayout>
 
     </LinearLayout>

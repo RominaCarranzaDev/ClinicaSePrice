@@ -119,4 +119,14 @@ open class BaseActivity : AppCompatActivity() {
                 ColorStateList.valueOf(color)
         }
     }
+
+    protected fun cerrarSesion() {
+        val intent = Intent(this, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        startActivity(intent)
+        finish()
+    }
 }
