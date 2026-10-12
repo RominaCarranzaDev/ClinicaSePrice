@@ -1,3 +1,4 @@
+
 package com.example.clinicaseprice
 
 data class Turno(
@@ -7,5 +8,8 @@ data class Turno(
     var fecha: String,
     var horario: String,
     var consultorio: String,
-    var estado: String
+    var estado: String,
+    var medicoId: Int = 0,
+    var nombreMedico: String = "Sin asignar",
+    var esSobreturno: Boolean = false
 )

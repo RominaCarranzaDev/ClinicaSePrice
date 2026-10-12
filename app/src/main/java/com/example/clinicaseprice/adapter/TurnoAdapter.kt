@@ -53,11 +53,19 @@ class TurnoAdapter(
 
         holder.tvPaciente.text = turno.nombrePaciente
 
+        val tipoTurno = if (turno.esSobreturno) {
+            "SOBRETURNO"
+        } else {
+            "Turno normal"
+        }
+
         holder.tvDetalles.text =
             "DNI: ${turno.dniPaciente}\n" +
+                    "Médico: ${turno.nombreMedico}\n" +
                     "Fecha: ${turno.fecha}\n" +
                     "Horario: ${turno.horario}\n" +
                     "Consultorio: ${turno.consultorio}\n" +
+                    "Tipo: $tipoTurno\n" +
                     "Estado: ${turno.estado}"
 
         holder.btnModificar.setOnClickListener {
@@ -71,8 +79,11 @@ class TurnoAdapter(
         val yaAcreditado = turno.estado == "Acreditado"
 
         holder.btnAcreditar.text =
-            if (yaAcreditado) "Paciente acreditado"
-            else "Acreditar y enviar a sala de espera"
+            if (yaAcreditado) {
+                "Paciente acreditado"
+            } else {
+                "Acreditar y enviar a sala de espera"
+            }
 
         holder.btnAcreditar.isEnabled = !yaAcreditado
 

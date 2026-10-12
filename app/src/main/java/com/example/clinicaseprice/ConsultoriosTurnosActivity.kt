@@ -1,3 +1,4 @@
+
 package com.example.clinicaseprice
 
 import android.os.Bundle
@@ -8,15 +9,18 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.adapter.TurnoAdapter
+import com.example.clinicaseprice.model.Paciente
 
 class ConsultoriosTurnosActivity : BaseActivity() {
 
@@ -47,8 +51,6 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
         rvTurnos = findViewById(R.id.rvTurnos)
         spEstadoTurno = findViewById(R.id.spEstadoTurno)
-
-        // Utiliza la barra de búsqueda compartida de activity_base.xml.
         etBuscarTurno = findViewById(R.id.edtBuscarPaciente)
 
         cargarTurnosDeEjemplo()
@@ -83,37 +85,37 @@ class ConsultoriosTurnosActivity : BaseActivity() {
     private fun cargarTurnosDeEjemplo() {
         if (todosLosTurnos.isNotEmpty()) return
 
-        todosLosTurnos.addAll(
-            listOf(
-                Turno(
-                    id = 1,
-                    nombrePaciente = "Juan Pérez",
-                    dniPaciente = "30123456",
-                    fecha = "15/10/2026",
-                    horario = "09:00",
-                    consultorio = "1",
-                    estado = "Pendiente"
-                ),
-                Turno(
-                    id = 2,
-                    nombrePaciente = "María Gómez",
-                    dniPaciente = "28456789",
-                    fecha = "15/10/2026",
-                    horario = "10:30",
-                    consultorio = "2",
-                    estado = "Confirmado"
-                ),
-                Turno(
-                    id = 3,
-                    nombrePaciente = "Carlos López",
-                    dniPaciente = "32567890",
-                    fecha = "16/10/2026",
-                    horario = "11:00",
-                    consultorio = "1",
-                    estado = "Pendiente"
-                )
-            )
+        val ejemplos = listOf(
+            Triple("38241902", "15/10/2026", "15:00"),
+            Triple("29412392", "15/10/2026", "10:00"),
+            Triple("34112441", "16/10/2026", "11:00")
         )
+
+        val medicos = listOf(2, 3, 3)
+
+        ejemplos.forEachIndexed { index, ejemplo ->
+            val paciente = PacientesRepository.buscarPorDni(
+                ejemplo.first
+            )
+
+            if (paciente != null) {
+                try {
+                    val nuevoTurno = TurnosRepository.agregarTurno(
+                        dniPaciente = paciente.dni,
+                        fecha = ejemplo.second,
+                        horario = ejemplo.third,
+                        medicoId = medicos[index]
+                    )
+
+                    nuevoTurno.estado =
+                        if (index == 1) "Confirmado" else "Pendiente"
+
+                } catch (_: IllegalArgumentException) {
+                    // Si algún ejemplo no puede cargarse,
+                    // la pantalla sigue funcionando.
+                }
+            }
+        }
     }
 
     private fun configurarFiltro() {
@@ -202,10 +204,14 @@ class ConsultoriosTurnosActivity : BaseActivity() {
                 busquedaDni.isNotEmpty() &&
                         dniPaciente.contains(busquedaDni)
 
+            val coincideMedico =
+                turno.nombreMedico.lowercase().contains(busqueda)
+
             val coincideBusqueda =
                 busqueda.isEmpty() ||
                         coincideNombre ||
-                        coincideDni
+                        coincideDni ||
+                        coincideMedico
 
             coincideEstado && coincideBusqueda
         }
@@ -224,6 +230,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
         }
 
         turno.estado = "Acreditado"
+
         filtrarTurnos()
 
         Toast.makeText(
@@ -234,30 +241,161 @@ class ConsultoriosTurnosActivity : BaseActivity() {
     }
 
     private fun abrirFormularioTurno(turno: Turno? = null) {
+
+        val pacientesRegistrados = PacientesRepository.pacientes.toList()
+
+        if (pacientesRegistrados.isEmpty()) {
+            Toast.makeText(
+                this,
+                "Primero tenés que registrar un paciente.",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        val medicosRegistrados = MedicosRepository.medicos
+
         val contenedor = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(40, 8, 40, 0)
         }
 
-        val etNombre = crearCampo("Nombre del paciente")
-        val etDni = crearCampo("DNI")
-        val etFecha = crearCampo("Fecha (dd/mm/aaaa)")
-        val etHorario = crearCampo("Horario (ej. 09:30)")
-        val etConsultorio = crearCampo("Número de consultorio")
+        val spPaciente = Spinner(this)
+        val spMedico = Spinner(this)
 
-        contenedor.addView(etNombre)
-        contenedor.addView(etDni)
+        val adaptadorPacientes = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            pacientesRegistrados.map {
+                "${it.nombreCompleto} - DNI: ${it.dni}"
+            }
+        )
+
+        adaptadorPacientes.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item
+        )
+
+        spPaciente.adapter = adaptadorPacientes
+
+        val adaptadorMedicos = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            medicosRegistrados.map {
+                "${it.nombre} - Consultorio ${it.consultorio}"
+            }
+        )
+
+        adaptadorMedicos.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item
+        )
+
+        spMedico.adapter = adaptadorMedicos
+
+        val tvDatosPaciente = TextView(this).apply {
+            textSize = 15f
+            setPadding(0, 12, 0, 16)
+        }
+
+        val tvDatosMedico = TextView(this).apply {
+            textSize = 14f
+            setPadding(0, 8, 0, 16)
+        }
+
+        val etFecha = crearCampo("Fecha (dd/mm/aaaa)")
+        val etHorario = crearCampo("Horario (ej. 09:00)")
+
+        val cbSobreturno = CheckBox(this).apply {
+            text = "Registrar como sobreturno"
+            textSize = 14f
+        }
+
+        contenedor.addView(TextView(this).apply {
+            text = "Seleccionar paciente"
+            textSize = 14f
+        })
+        contenedor.addView(spPaciente)
+        contenedor.addView(tvDatosPaciente)
+
+        contenedor.addView(TextView(this).apply {
+            text = "Seleccionar médico"
+            textSize = 14f
+        })
+        contenedor.addView(spMedico)
+        contenedor.addView(tvDatosMedico)
+
         contenedor.addView(etFecha)
         contenedor.addView(etHorario)
-        contenedor.addView(etConsultorio)
+        contenedor.addView(cbSobreturno)
 
         if (turno != null) {
-            etNombre.setText(turno.nombrePaciente)
-            etDni.setText(turno.dniPaciente)
+            val indicePaciente = pacientesRegistrados.indexOfFirst {
+                it.dni.filter { c -> c.isDigit() } ==
+                        turno.dniPaciente.filter { c -> c.isDigit() }
+            }
+
+            if (indicePaciente >= 0) {
+                spPaciente.setSelection(indicePaciente)
+            }
+
+            val indiceMedico = medicosRegistrados.indexOfFirst {
+                it.id == turno.medicoId
+            }
+
+            if (indiceMedico >= 0) {
+                spMedico.setSelection(indiceMedico)
+            }
+
             etFecha.setText(turno.fecha)
             etHorario.setText(turno.horario)
-            etConsultorio.setText(turno.consultorio)
+            cbSobreturno.isChecked = turno.esSobreturno
         }
+
+        fun actualizarDatosMedico() {
+            val medico = medicosRegistrados.getOrNull(
+                spMedico.selectedItemPosition
+            ) ?: return
+
+            tvDatosMedico.text =
+                "Consultorio asignado: ${medico.consultorio}\n" +
+                        "Disponibilidad:\n" +
+                        MedicosRepository.descripcionHorarios(medico)
+        }
+
+        spPaciente.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    pacientesRegistrados.getOrNull(position)?.let {
+                        mostrarDatosPaciente(tvDatosPaciente, it)
+                    }
+                }
+
+                override fun onNothingSelected(
+                    parent: AdapterView<*>?
+                ) {}
+            }
+
+        spMedico.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    actualizarDatosMedico()
+                }
+
+                override fun onNothingSelected(
+                    parent: AdapterView<*>?
+                ) {}
+            }
 
         val titulo = if (turno == null) {
             "Asignar turno"
@@ -276,70 +414,122 @@ class ConsultoriosTurnosActivity : BaseActivity() {
             dialogo.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setOnClickListener {
 
-                    val nombre = etNombre.text.toString().trim()
-                    val dni = etDni.text.toString().trim()
-                    val fecha = etFecha.text.toString().trim()
-                    val horario = etHorario.text.toString().trim()
-                    val consultorio =
-                        etConsultorio.text.toString().trim()
+                    val pacienteSeleccionado =
+                        pacientesRegistrados.getOrNull(
+                            spPaciente.selectedItemPosition
+                        )
 
-                    if (
-                        nombre.isEmpty() ||
-                        dni.isEmpty() ||
-                        fecha.isEmpty() ||
-                        horario.isEmpty() ||
-                        consultorio.isEmpty()
-                    ) {
+                    val medicoSeleccionado =
+                        medicosRegistrados.getOrNull(
+                            spMedico.selectedItemPosition
+                        )
+
+                    if (pacienteSeleccionado == null) {
                         Toast.makeText(
                             this,
-                            "Completá todos los campos.",
+                            "Seleccioná un paciente.",
                             Toast.LENGTH_SHORT
                         ).show()
                         return@setOnClickListener
                     }
 
-                    if (turno == null) {
-                        val nuevoId =
-                            (todosLosTurnos.maxOfOrNull { it.id } ?: 0) + 1
-
-                        todosLosTurnos.add(
-                            Turno(
-                                id = nuevoId,
-                                nombrePaciente = nombre,
-                                dniPaciente = dni,
-                                fecha = fecha,
-                                horario = horario,
-                                consultorio = consultorio,
-                                estado = "Pendiente"
-                            )
-                        )
-
+                    if (medicoSeleccionado == null) {
                         Toast.makeText(
                             this,
-                            "Turno asignado correctamente.",
+                            "Seleccioná un médico.",
                             Toast.LENGTH_SHORT
                         ).show()
-
-                    } else {
-                        turno.nombrePaciente = nombre
-                        turno.dniPaciente = dni
-                        turno.fecha = fecha
-                        turno.horario = horario
-                        turno.consultorio = consultorio
-
-                        Toast.makeText(
-                            this,
-                            "Turno modificado correctamente.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        return@setOnClickListener
                     }
 
-                    filtrarTurnos()
-                    dialogo.dismiss()
+                    val fecha = etFecha.text.toString().trim()
+                    val horario = etHorario.text.toString().trim()
+
+                    if (fecha.isBlank() || horario.isBlank()) {
+                        Toast.makeText(
+                            this,
+                            "Completá la fecha y el horario.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@setOnClickListener
+                    }
+
+                    val pacienteActual = PacientesRepository.buscarPorId(
+                        pacienteSeleccionado.id
+                    )
+
+                    if (pacienteActual == null) {
+                        Toast.makeText(
+                            this,
+                            "El paciente ya no está registrado.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@setOnClickListener
+                    }
+
+                    try {
+                        if (turno == null) {
+                            TurnosRepository.agregarTurno(
+                                dniPaciente = pacienteActual.dni,
+                                fecha = fecha,
+                                horario = horario,
+                                medicoId = medicoSeleccionado.id,
+                                esSobreturno = cbSobreturno.isChecked
+                            )
+
+                            Toast.makeText(
+                                this,
+                                if (cbSobreturno.isChecked) {
+                                    "Sobreturno asignado correctamente."
+                                } else {
+                                    "Turno asignado a ${pacienteActual.nombreCompleto}."
+                                },
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                        } else {
+                            TurnosRepository.modificarTurno(
+                                turno = turno,
+                                dniPaciente = pacienteActual.dni,
+                                fecha = fecha,
+                                horario = horario,
+                                medicoId = medicoSeleccionado.id,
+                                esSobreturno = cbSobreturno.isChecked
+                            )
+
+                            Toast.makeText(
+                                this,
+                                "Turno modificado correctamente.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        filtrarTurnos()
+                        dialogo.dismiss()
+
+                    } catch (e: IllegalArgumentException) {
+                        Toast.makeText(
+                            this,
+                            e.message ?: "No se pudo guardar el turno.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
         }
 
         dialogo.show()
+    }
+
+    private fun mostrarDatosPaciente(
+        vista: TextView,
+        paciente: Paciente
+    ) {
+        vista.text = """
+            Nombre: ${paciente.nombreCompleto}
+            DNI: ${paciente.dni}
+            Teléfono: ${paciente.telefono}
+            Obra social: ${paciente.obraSocial}
+        """.trimIndent()
     }
 
     private fun crearCampo(pista: String): EditText {
@@ -357,10 +547,12 @@ class ConsultoriosTurnosActivity : BaseActivity() {
         AlertDialog.Builder(this)
             .setTitle("Cancelar turno")
             .setMessage(
-                "¿Querés cancelar y eliminar el turno de ${turno.nombrePaciente}?"
+                "¿Querés cancelar y eliminar el turno de " +
+                        "${turno.nombrePaciente}?"
             )
             .setPositiveButton("Sí, cancelar") { _, _ ->
                 todosLosTurnos.remove(turno)
+
                 filtrarTurnos()
 
                 Toast.makeText(

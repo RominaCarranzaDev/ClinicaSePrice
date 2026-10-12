@@ -46,23 +46,56 @@ object PacientesRepository {
         siguienteId = (pacientes.maxOfOrNull { it.id } ?: 0) + 1
     }
 
+    private fun normalizarDni(dni: String): String {
+        return dni.filter { it.isDigit() }
+    }
+
+    fun buscarPorDni(dni: String): Paciente? {
+        val dniNormalizado = normalizarDni(dni)
+
+        if (dniNormalizado.isEmpty()) return null
+
+        return pacientes.find {
+            normalizarDni(it.dni) == dniNormalizado
+        }
+    }
+
+    fun buscarPorId(id: Int): Paciente? {
+        return pacientes.find { it.id == id }
+    }
+
     fun agregarPaciente(
         nombre: String,
         dni: String,
         telefono: String,
         obraSocial: String
     ): Paciente {
+        require(nombre.isNotBlank()) {
+            "El nombre del paciente es obligatorio."
+        }
+
+        val dniNormalizado = normalizarDni(dni)
+
+        require(dniNormalizado.isNotEmpty()) {
+            "El DNI es obligatorio."
+        }
+
+        require(buscarPorDni(dniNormalizado) == null) {
+            "Ya existe un paciente registrado con ese DNI."
+        }
+
         val nuevoPaciente = Paciente(
             id = siguienteId++,
-            nombreCompleto = nombre,
-            dni = dni,
-            telefono = telefono,
-            obraSocial = obraSocial,
+            nombreCompleto = nombre.trim(),
+            dni = dniNormalizado,
+            telefono = telefono.trim(),
+            obraSocial = obraSocial.trim(),
             ultimoTurno = "Sin turnos",
             estado = "PENDIENTE"
         )
 
         pacientes.add(nuevoPaciente)
+
         return nuevoPaciente
     }
 }
