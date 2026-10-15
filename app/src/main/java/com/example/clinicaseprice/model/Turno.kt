@@ -1,5 +1,4 @@
-
-package com.example.clinicaseprice
+package com.example.clinicaseprice.model
 
 data class Turno(
     val id: Int,

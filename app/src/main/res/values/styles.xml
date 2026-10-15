@@ -11,7 +11,7 @@
         <item name="android:backgroundTint">@color/primary</item>
 
         <item name="android:gravity">center</item>
-        <item name="android:padding">@dimen/spacing_s</item>
+        <item name="android:padding">@dimen/spacing_xs</item>
 
     </style>
 
@@ -26,7 +26,7 @@
         <item name="android:backgroundTint">@color/white</item>
 
         <item name="android:gravity">center</item>
-        <item name="android:padding">@dimen/spacing_s</item>
+        <item name="android:padding">@dimen/spacing_xs</item>
 
     </style>
 

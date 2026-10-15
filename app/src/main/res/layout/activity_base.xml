@@ -20,7 +20,7 @@
         <!-- Logo y nombre de la clínica -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="90dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:background="@color/white">
@@ -60,7 +60,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E1E8F0" />
+            android:background="@color/blur" />
 
         <!-- Opciones de navegación -->
         <LinearLayout
@@ -147,18 +147,21 @@
             android:layout_height="64dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingHorizontal="@dimen/spacing_s">
+            android:paddingHorizontal="@dimen/spacing_s"
+            android:layout_marginBottom="@dimen/spacing_m">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:src="@drawable/ic_account_circle"
                 android:paddingHorizontal="@dimen/spacing_s" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="3">
 
                 <TextView
                     android:id="@+id/txtUsuario"
@@ -179,15 +182,13 @@
 
             </LinearLayout>
 
-            <ImageButton
+            <TextView
                 android:id="@+id/btnCerrarSesion"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_exit"
-                android:contentDescription="Cerrar sesión"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:scaleType="centerInside"
-                android:padding="10dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/ic_exit"
+                android:padding="@dimen/spacing_s" />
 
         </LinearLayout>
 
@@ -205,10 +206,11 @@
         <LinearLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_vertical"
             android:paddingHorizontal="@dimen/spacing_m"
+            android:paddingVertical="@dimen/spacing_s"
             android:background="@color/white">
 
             <TextView
@@ -231,7 +233,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/shadow" />
+            android:background="@color/blur" />
 
         <!-- Barra de búsqueda global -->
         <LinearLayout
@@ -247,10 +249,10 @@
             <EditText
                 android:id="@+id/edtBuscarPaciente"
                 android:layout_width="400dp"
-                android:layout_height="42dp"
+                android:layout_height="48dp"
                 android:hint="Buscar por Nombre o DNI..."
                 android:inputType="text"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_body"
                 android:singleLine="true"
                 android:paddingHorizontal="@dimen/spacing_m"
                 android:backgroundTint="@color/blur" />

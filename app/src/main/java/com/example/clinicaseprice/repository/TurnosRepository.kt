@@ -1,6 +1,6 @@
+package com.example.clinicaseprice.repository
 
-package com.example.clinicaseprice
-
+import com.example.clinicaseprice.model.Turno
 import java.text.SimpleDateFormat
 import java.util.Locale
 

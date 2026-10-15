@@ -32,6 +32,7 @@ open class BaseActivity : AppCompatActivity() {
         val navPacientes = findViewById<TextView>(R.id.navPacientes)
         val navTurnos = findViewById<TextView>(R.id.navTurnos)
         val navSalaEspera = findViewById<TextView>(R.id.navSalaEspera)
+        val btnCerrarSesion = findViewById<TextView>(R.id.btnCerrarSesion)
 
         navMenu.setOnClickListener {
             abrirPantalla(MenuActivity::class.java)
@@ -47,6 +48,10 @@ open class BaseActivity : AppCompatActivity() {
 
         navSalaEspera.setOnClickListener {
             abrirPantalla(SalaEsperaActivity::class.java)
+        }
+
+        btnCerrarSesion.setOnClickListener {
+            cerrarSesion()
         }
     }
 
@@ -115,11 +120,9 @@ open class BaseActivity : AppCompatActivity() {
                 if (seleccionado) Typeface.BOLD else Typeface.NORMAL
             )
 
-            elemento.compoundDrawableTintList =
-                ColorStateList.valueOf(color)
+            elemento.compoundDrawableTintList = ColorStateList.valueOf(color)
         }
     }
-
     protected fun cerrarSesion() {
         val intent = Intent(this, LoginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or

@@ -2,9 +2,8 @@ package com.example.clinicaseprice
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 
@@ -18,7 +17,7 @@ class MenuActivity : AppCompatActivity() {
 
         val cardEstudios = findViewById<LinearLayout>(R.id.cardEstudios)
 
-        val btnCerrarSesion = findViewById< ImageButton>(R.id.btnCerrarSesion)
+        val btnCerrarSesion = findViewById<TextView>(R.id.btnCerrarSesion)
 
         btnCerrarSesion.setOnClickListener {
             cerrarSesion()

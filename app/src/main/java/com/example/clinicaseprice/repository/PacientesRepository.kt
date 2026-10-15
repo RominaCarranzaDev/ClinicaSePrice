@@ -1,5 +1,4 @@
-
-package com.example.clinicaseprice
+package com.example.clinicaseprice.repository
 
 import com.example.clinicaseprice.model.Paciente
 

@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.R
-import com.example.clinicaseprice.Turno
+import com.example.clinicaseprice.model.Turno
 
 class TurnoAdapter(
     private val listaTurnos: MutableList<Turno>,

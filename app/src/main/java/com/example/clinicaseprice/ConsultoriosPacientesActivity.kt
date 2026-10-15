@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.adapter.PacienteAdapter
 import com.example.clinicaseprice.model.Paciente
+import com.example.clinicaseprice.repository.PacientesRepository
 
 class ConsultoriosPacientesActivity : BaseActivity() {
 

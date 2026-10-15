@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import com.example.clinicaseprice.repository.PacientesRepository
 
 class FichaMedicaActivity : BaseActivity() {
 

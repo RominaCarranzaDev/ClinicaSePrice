@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.clinicaseprice.repository.TurnosRepository
 
 class SalaEsperaActivity : BaseActivity() {
 

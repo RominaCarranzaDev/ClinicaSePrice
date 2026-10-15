@@ -34,16 +34,17 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <ImageButton
+        <TextView
             android:id="@+id/btnCerrarSesion"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_exit"
-            android:contentDescription="Cerrar sesión"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="10dp"
-            android:scaleType="centerInside" />
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cerrar sesión"
+            android:textColor="@color/black"
+            android:drawableStart="@drawable/ic_exit"
+            android:padding="@dimen/spacing_s"
+            android:layout_marginEnd="@dimen/spacing_m"
+            android:drawablePadding="@dimen/spacing_xs"
+            android:gravity="center"/>
 
     </LinearLayout>
     <!-- Container cards -->

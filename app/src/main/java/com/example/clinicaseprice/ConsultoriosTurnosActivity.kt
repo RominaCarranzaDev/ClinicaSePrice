@@ -21,6 +21,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.adapter.TurnoAdapter
 import com.example.clinicaseprice.model.Paciente
+import com.example.clinicaseprice.model.Turno
+import com.example.clinicaseprice.repository.MedicosRepository
+import com.example.clinicaseprice.repository.PacientesRepository
+import com.example.clinicaseprice.repository.TurnosRepository
 
 class ConsultoriosTurnosActivity : BaseActivity() {
 

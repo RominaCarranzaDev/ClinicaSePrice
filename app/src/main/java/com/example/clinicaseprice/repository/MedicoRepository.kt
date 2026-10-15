@@ -1,6 +1,7 @@
+package com.example.clinicaseprice.repository
 
-package com.example.clinicaseprice
-
+import com.example.clinicaseprice.model.FranjaHoraria
+import com.example.clinicaseprice.model.Medico
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

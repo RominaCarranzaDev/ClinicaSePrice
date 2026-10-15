@@ -35,10 +35,10 @@
             android:id="@+id/loginCard"
             android:layout_width="340dp"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@drawable/bg_card_default"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="36dp">
+            android:padding="36dp" >
 
             <!-- Logo -->
             <ImageView
@@ -86,7 +86,7 @@
                 android:id="@+id/etContrasena"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="48dp"
                 android:autofillHints="password"
                 android:hint="Ingrese su contraseña"
                 android:inputType="textPassword"
@@ -120,10 +120,11 @@
                 android:id="@+id/tvMensaje"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Acceso exclusivo para personal autorizado de SePrice Clínica"
+                android:text="Acceso exclusivo para personal autorizado de Clínica SePrice."
                 android:textColor="@color/shadow"
                 android:textSize="@dimen/text_small"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:textAlignment="center"/>
 
             <!-- Copyright -->
             <TextView

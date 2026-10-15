@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import com.example.clinicaseprice.repository.PacientesRepository
 
 class NuevoPacienteActivity : BaseActivity() {
 
