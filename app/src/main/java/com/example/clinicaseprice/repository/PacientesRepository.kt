@@ -45,10 +45,17 @@ object PacientesRepository {
         siguienteId = (pacientes.maxOfOrNull { it.id } ?: 0) + 1
     }
 
+    // Normaliza el DNI para evitar diferencias por espacios o puntos.
     private fun normalizarDni(dni: String): String {
         return dni.filter { it.isDigit() }
     }
 
+    // Devuelve todos los pacientes registrados.
+    fun obtenerTodos(): List<Paciente> {
+        return pacientes.toList()
+    }
+
+    // Busca un paciente por DNI.
     fun buscarPorDni(dni: String): Paciente? {
         val dniNormalizado = normalizarDni(dni)
 
@@ -59,16 +66,19 @@ object PacientesRepository {
         }
     }
 
+    // Busca un paciente por su identificador.
     fun buscarPorId(id: Int): Paciente? {
         return pacientes.find { it.id == id }
     }
 
+    // Registra un paciente nuevo.
     fun agregarPaciente(
         nombre: String,
         dni: String,
         telefono: String,
         obraSocial: String
     ): Paciente {
+
         require(nombre.isNotBlank()) {
             "El nombre del paciente es obligatorio."
         }
@@ -96,5 +106,48 @@ object PacientesRepository {
         pacientes.add(nuevoPaciente)
 
         return nuevoPaciente
+    }
+
+    // Actualiza los datos de un paciente existente.
+    fun actualizarPaciente(
+        id: Int,
+        nombre: String,
+        dni: String,
+        telefono: String,
+        obraSocial: String
+    ): Boolean {
+
+        val paciente = buscarPorId(id) ?: return false
+
+        require(nombre.isNotBlank()) {
+            "El nombre del paciente es obligatorio."
+        }
+
+        val dniNormalizado = normalizarDni(dni)
+
+        require(dniNormalizado.isNotEmpty()) {
+            "El DNI es obligatorio."
+        }
+
+        require(
+            pacientes.none {
+                it.id != id &&
+                        normalizarDni(it.dni) == dniNormalizado
+            }
+        ) {
+            "Ya existe otro paciente registrado con ese DNI."
+        }
+
+        paciente.nombreCompleto = nombre.trim()
+        paciente.dni = dniNormalizado
+        paciente.telefono = telefono.trim()
+        paciente.obraSocial = obraSocial.trim()
+
+        return true
+    }
+    fun actualizarEstado(id: Int, nuevoEstado: String): Boolean {
+        val paciente = buscarPorId(id) ?: return false
+        paciente.estado = nuevoEstado
+        return true
     }
 }

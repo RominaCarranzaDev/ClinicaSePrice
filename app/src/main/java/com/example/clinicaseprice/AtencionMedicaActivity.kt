@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.model.Turno
 import com.example.clinicaseprice.repository.TurnosRepository
+import android.widget.Toast
 
 class AtencionMedicaActivity : AppCompatActivity() {
 
@@ -168,8 +169,8 @@ class AtencionMedicaActivity : AppCompatActivity() {
         pacientesEnEspera.clear()
 
         pacientesEnEspera.addAll(
-            TurnosRepository.turnos.filter { turno ->
-                turno.estado == "Acreditado"
+            TurnosRepository.obtenerTodos().filter { turno ->
+                turno.estado.equals("Acreditado", ignoreCase = true)
             }
         )
 
@@ -203,15 +204,21 @@ class AtencionMedicaActivity : AppCompatActivity() {
         tvInicialesPaciente.text = iniciales
 
         // Cambiar el estado para que no vuelva a la lista
-        turno.estado = "En atención"
+        val actualizado = TurnosRepository.actualizarEstado(
+            id = turno.id,
+            nuevoEstado = "En atención"
+        )
 
+        if (!actualizado) {
+            Toast.makeText(
+                this,
+                "No se pudo actualizar el estado del turno.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
         // Quitar el paciente de la lista de espera
-        pacientesEnEspera.removeAt(0)
-
-        // Actualizar la lista y el contador
-        adapterSalaEspera.actualizarLista(pacientesEnEspera)
-
-        actualizarCantidadPacientes()
+        cargarSalaEspera()
     }
 
     // Actualizar el contador de pacientes en espera

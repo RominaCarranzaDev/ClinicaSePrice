@@ -33,9 +33,7 @@ class FichaMedicaActivity : BaseActivity() {
 
         pacienteId = intent.getIntExtra("paciente_id", -1)
 
-        val paciente = PacientesRepository.pacientes.find {
-            it.id == pacienteId
-        }
+        val paciente = PacientesRepository.buscarPorId(pacienteId)
 
         if (paciente == null) {
             Toast.makeText(

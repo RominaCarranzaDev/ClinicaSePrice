@@ -25,8 +25,8 @@ class ConsultoriosPacientesActivity : BaseActivity() {
     private lateinit var adapter: PacienteAdapter
     private lateinit var edtBuscarPaciente: EditText
 
-    private val listaPacientesOriginal: MutableList<Paciente>
-        get() = PacientesRepository.pacientes
+    private val listaPacientesOriginal: List<Paciente>
+        get() = PacientesRepository.obtenerTodos()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -207,13 +207,21 @@ class ConsultoriosPacientesActivity : BaseActivity() {
         adapter.actualizarLista(listaFiltrada)
     }
 
+
     private fun cambiarEstado(paciente: Paciente) {
-        paciente.estado = when (paciente.estado.uppercase()) {
+        val nuevoEstado = when (paciente.estado.uppercase()) {
             "PENDIENTE" -> "CONFIRMADO"
             "CONFIRMADO" -> "CANCELADO"
             else -> "PENDIENTE"
         }
 
-        aplicarFiltros()
+        val actualizado = PacientesRepository.actualizarEstado(
+            paciente.id,
+            nuevoEstado
+        )
+
+        if (actualizado) {
+            aplicarFiltros()
+        }
     }
 }

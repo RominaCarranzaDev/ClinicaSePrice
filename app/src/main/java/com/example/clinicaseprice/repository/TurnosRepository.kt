@@ -14,7 +14,50 @@ object TurnosRepository {
         return dni.filter { it.isDigit() }
     }
 
+    // Sincroniza los datos visibles con los repositorios centrales.
+    private fun sincronizarDatos() {
+        turnos.forEach { turno ->
+
+            // Recupera al paciente por ID.
+            var paciente = if (turno.pacienteId > 0) {
+                PacientesRepository.buscarPorId(turno.pacienteId)
+            } else {
+                null
+            }
+
+            // Compatibilidad con turnos antiguos sin pacienteId.
+            if (paciente == null) {
+                paciente = PacientesRepository.buscarPorDni(
+                    turno.dniPaciente
+                )
+
+                if (paciente != null) {
+                    turno.pacienteId = paciente.id
+                }
+            }
+
+            if (paciente != null) {
+                turno.nombrePaciente = paciente.nombreCompleto
+                turno.dniPaciente = paciente.dni
+            }
+
+            // Actualiza los datos del profesional.
+            val medico = MedicosRepository.buscarPorId(turno.medicoId)
+
+            if (medico != null) {
+                turno.nombreMedico = medico.nombre
+                turno.consultorio = medico.consultorioAsignado.numero.toString()
+            }
+        }
+    }
+
+    fun obtenerTodos(): List<Turno> {
+        sincronizarDatos()
+        return turnos.toList()
+    }
+
     fun buscarPorId(id: Int): Turno? {
+        sincronizarDatos()
         return turnos.find { it.id == id }
     }
 
@@ -32,7 +75,9 @@ object TurnosRepository {
             "El DNI del paciente es obligatorio."
         }
 
-        require(PacientesRepository.buscarPorDni(dniNormalizado) != null) {
+        require(
+            PacientesRepository.buscarPorDni(dniNormalizado) != null
+        ) {
             "No existe un paciente registrado con ese DNI."
         }
 
@@ -80,7 +125,7 @@ object TurnosRepository {
             it.id != turnoActualId &&
                     it.fecha == fecha &&
                     it.horario == horario &&
-                    it.estado != "Cancelado"
+                    !it.estado.equals("Cancelado", ignoreCase = true)
         }
 
         val mismoMedico = otrosTurnos.filter {
@@ -88,15 +133,11 @@ object TurnosRepository {
         }
 
         if (esSobreturno) {
-            require(
-                mismoMedico.any { !it.esSobreturno }
-            ) {
+            require(mismoMedico.any { !it.esSobreturno }) {
                 "Para asignar un sobreturno debe existir un turno normal para ese médico y horario."
             }
 
-            require(
-                mismoMedico.none { it.esSobreturno }
-            ) {
+            require(mismoMedico.none { it.esSobreturno }) {
                 "Ya existe un sobreturno para ese médico y horario."
             }
         } else {
@@ -105,13 +146,15 @@ object TurnosRepository {
             }
         }
 
-        val consultorioOcupado = otrosTurnos.any {
-            it.consultorio == medico.consultorio &&
-                    it.medicoId != medicoId
+        val consultorioOcupado = otrosTurnos.any { turno ->
+            val otroMedico = MedicosRepository.buscarPorId(turno.medicoId)
+
+            otroMedico != null &&
+                    otroMedico.consultorioAsignado == medico.consultorioAsignado
         }
 
         require(!consultorioOcupado) {
-            "El consultorio ${medico.consultorio} ya está ocupado en ese horario."
+            "El consultorio ${medico.consultorioAsignado.numero} ya está ocupado en ese horario."
         }
     }
 
@@ -119,10 +162,10 @@ object TurnosRepository {
         dniPaciente: String,
         fecha: String,
         horario: String,
-        consultorio: String = "",
         medicoId: Int,
         esSobreturno: Boolean = false
     ): Turno {
+
         val medico = MedicosRepository.buscarPorId(medicoId)
             ?: throw IllegalArgumentException(
                 "Seleccioná un médico válido."
@@ -138,7 +181,9 @@ object TurnosRepository {
 
         val paciente = PacientesRepository.buscarPorDni(
             normalizarDni(dniPaciente)
-        )!!
+        ) ?: throw IllegalArgumentException(
+            "No existe un paciente registrado con ese DNI."
+        )
 
         val nuevoTurno = Turno(
             id = siguienteId++,
@@ -146,14 +191,16 @@ object TurnosRepository {
             dniPaciente = paciente.dni,
             fecha = fecha,
             horario = horario,
-            consultorio = medico.consultorio,
+            consultorio = medico.consultorioAsignado.numero.toString(),
             estado = "Pendiente",
             medicoId = medico.id,
             nombreMedico = medico.nombre,
-            esSobreturno = esSobreturno
+            esSobreturno = esSobreturno,
+            pacienteId = paciente.id
         )
 
         turnos.add(nuevoTurno)
+
         return nuevoTurno
     }
 
@@ -181,15 +228,32 @@ object TurnosRepository {
 
         val paciente = PacientesRepository.buscarPorDni(
             normalizarDni(dniPaciente)
-        )!!
+        ) ?: throw IllegalArgumentException(
+            "No existe un paciente registrado con ese DNI."
+        )
 
+        turno.pacienteId = paciente.id
         turno.nombrePaciente = paciente.nombreCompleto
         turno.dniPaciente = paciente.dni
         turno.fecha = fecha
         turno.horario = horario
-        turno.consultorio = medico.consultorio
+        turno.consultorio = medico.consultorioAsignado.numero.toString()
         turno.medicoId = medico.id
         turno.nombreMedico = medico.nombre
         turno.esSobreturno = esSobreturno
+    }
+
+    fun actualizarEstado(id: Int, nuevoEstado: String): Boolean {
+        val turno = buscarPorId(id) ?: return false
+
+        turno.estado = nuevoEstado
+
+        return true
+    }
+
+    fun cancelarTurno(id: Int): Boolean {
+        val turno = buscarPorId(id) ?: return false
+
+        return turnos.remove(turno)
     }
 }

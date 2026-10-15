@@ -1,4 +1,3 @@
-
 package com.example.clinicaseprice
 
 import android.os.Bundle
@@ -33,7 +32,10 @@ class ConsultoriosTurnosActivity : BaseActivity() {
     private lateinit var etBuscarTurno: EditText
     private lateinit var adaptador: TurnoAdapter
 
-    private val todosLosTurnos = TurnosRepository.turnos
+    // La Activity consulta los turnos desde el repositorio central.
+    private fun obtenerTurnos(): List<Turno> {
+        return TurnosRepository.obtenerTodos()
+    }
 
     private val estados = listOf(
         "Todos",
@@ -56,8 +58,6 @@ class ConsultoriosTurnosActivity : BaseActivity() {
         rvTurnos = findViewById(R.id.rvTurnos)
         spEstadoTurno = findViewById(R.id.spEstadoTurno)
         etBuscarTurno = findViewById(R.id.edtBuscarPaciente)
-
-        cargarTurnosDeEjemplo()
 
         rvTurnos.layoutManager = LinearLayoutManager(this)
 
@@ -86,42 +86,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
         filtrarTurnos()
     }
 
-    private fun cargarTurnosDeEjemplo() {
-        if (todosLosTurnos.isNotEmpty()) return
-
-        val ejemplos = listOf(
-            Triple("38241902", "15/10/2026", "15:00"),
-            Triple("29412392", "15/10/2026", "10:00"),
-            Triple("34112441", "16/10/2026", "11:00")
-        )
-
-        val medicos = listOf(2, 3, 3)
-
-        ejemplos.forEachIndexed { index, ejemplo ->
-            val paciente = PacientesRepository.buscarPorDni(
-                ejemplo.first
-            )
-
-            if (paciente != null) {
-                try {
-                    val nuevoTurno = TurnosRepository.agregarTurno(
-                        dniPaciente = paciente.dni,
-                        fecha = ejemplo.second,
-                        horario = ejemplo.third,
-                        medicoId = medicos[index]
-                    )
-
-                    nuevoTurno.estado =
-                        if (index == 1) "Confirmado" else "Pendiente"
-
-                } catch (_: IllegalArgumentException) {
-                    // Si algún ejemplo no puede cargarse,
-                    // la pantalla sigue funcionando.
-                }
-            }
-        }
-    }
-
+    // Configura el filtro por estado, nombre, DNI o médico.
     private fun configurarFiltro() {
         val adaptadorEstados = ArrayAdapter(
             this,
@@ -149,7 +114,8 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
                 override fun onNothingSelected(
                     parent: AdapterView<*>?
-                ) {}
+                ) {
+                }
             }
 
         etBuscarTurno.addTextChangedListener(
@@ -160,7 +126,8 @@ class ConsultoriosTurnosActivity : BaseActivity() {
                     start: Int,
                     count: Int,
                     after: Int
-                ) {}
+                ) {
+                }
 
                 override fun onTextChanged(
                     s: CharSequence?,
@@ -171,11 +138,13 @@ class ConsultoriosTurnosActivity : BaseActivity() {
                     filtrarTurnos()
                 }
 
-                override fun afterTextChanged(s: Editable?) {}
+                override fun afterTextChanged(s: Editable?) {
+                }
             }
         )
     }
 
+    // Obtiene la lista centralizada y aplica los filtros de la pantalla.
     private fun filtrarTurnos() {
         if (!::adaptador.isInitialized) return
 
@@ -189,7 +158,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
         val busquedaDni = busqueda.filter { it.isDigit() }
 
-        val resultado = todosLosTurnos.filter { turno ->
+        val resultado = obtenerTurnos().filter { turno ->
 
             val coincideEstado =
                 estadoSeleccionado == "Todos" ||
@@ -223,8 +192,9 @@ class ConsultoriosTurnosActivity : BaseActivity() {
         adaptador.actualizarLista(resultado)
     }
 
+    // El cambio de estado se solicita al repositorio.
     private fun acreditarTurno(turno: Turno) {
-        if (turno.estado == "Acreditado") {
+        if (turno.estado.equals("Acreditado", ignoreCase = true)) {
             Toast.makeText(
                 this,
                 "Este paciente ya está acreditado.",
@@ -233,20 +203,32 @@ class ConsultoriosTurnosActivity : BaseActivity() {
             return
         }
 
-        turno.estado = "Acreditado"
+        val actualizado = TurnosRepository.actualizarEstado(
+            id = turno.id,
+            nuevoEstado = "Acreditado"
+        )
 
-        filtrarTurnos()
+        if (actualizado) {
+            filtrarTurnos()
 
-        Toast.makeText(
-            this,
-            "Paciente acreditado y enviado a Sala de espera.",
-            Toast.LENGTH_SHORT
-        ).show()
+            Toast.makeText(
+                this,
+                "Paciente acreditado y enviado a Sala de espera.",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                this,
+                "No se encontró el turno.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
+    // Formulario para registrar un turno o modificar uno existente.
     private fun abrirFormularioTurno(turno: Turno? = null) {
 
-        val pacientesRegistrados = PacientesRepository.pacientes.toList()
+        val pacientesRegistrados = PacientesRepository.obtenerTodos()
 
         if (pacientesRegistrados.isEmpty()) {
             Toast.makeText(
@@ -285,7 +267,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
             this,
             android.R.layout.simple_spinner_item,
             medicosRegistrados.map {
-                "${it.nombre} - Consultorio ${it.consultorio}"
+                "${it.nombre} - Consultorio ${it.consultorioAsignado.numero}"
             }
         )
 
@@ -333,7 +315,8 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
         if (turno != null) {
             val indicePaciente = pacientesRegistrados.indexOfFirst {
-                it.dni.filter { c -> c.isDigit() } ==
+                it.id == turno.pacienteId ||
+                        it.dni.filter { c -> c.isDigit() } ==
                         turno.dniPaciente.filter { c -> c.isDigit() }
             }
 
@@ -360,7 +343,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
             ) ?: return
 
             tvDatosMedico.text =
-                "Consultorio asignado: ${medico.consultorio}\n" +
+                "Consultorio asignado: ${medico.consultorioAsignado.numero}\n" +
                         "Disponibilidad:\n" +
                         MedicosRepository.descripcionHorarios(medico)
         }
@@ -381,7 +364,8 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
                 override fun onNothingSelected(
                     parent: AdapterView<*>?
-                ) {}
+                ) {
+                }
             }
 
         spMedico.onItemSelectedListener =
@@ -398,7 +382,8 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
                 override fun onNothingSelected(
                     parent: AdapterView<*>?
-                ) {}
+                ) {
+                }
             }
 
         val titulo = if (turno == null) {
@@ -458,6 +443,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
                         return@setOnClickListener
                     }
 
+                    // Se vuelve a consultar el paciente por su ID.
                     val pacienteActual = PacientesRepository.buscarPorId(
                         pacienteSeleccionado.id
                     )
@@ -492,8 +478,22 @@ class ConsultoriosTurnosActivity : BaseActivity() {
                             ).show()
 
                         } else {
+                            // El repositorio realiza la modificación.
+                            val turnoActual = TurnosRepository.buscarPorId(
+                                turno.id
+                            )
+
+                            if (turnoActual == null) {
+                                Toast.makeText(
+                                    this,
+                                    "No se encontró el turno.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@setOnClickListener
+                            }
+
                             TurnosRepository.modificarTurno(
-                                turno = turno,
+                                turno = turnoActual,
                                 dniPaciente = pacienteActual.dni,
                                 fecha = fecha,
                                 horario = horario,
@@ -524,6 +524,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
         dialogo.show()
     }
 
+    // Muestra información tomada del objeto Paciente del repositorio.
     private fun mostrarDatosPaciente(
         vista: TextView,
         paciente: Paciente
@@ -547,6 +548,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
         }
     }
 
+    // La cancelación se solicita al repositorio.
     private fun cancelarTurno(turno: Turno) {
         AlertDialog.Builder(this)
             .setTitle("Cancelar turno")
@@ -555,15 +557,24 @@ class ConsultoriosTurnosActivity : BaseActivity() {
                         "${turno.nombrePaciente}?"
             )
             .setPositiveButton("Sí, cancelar") { _, _ ->
-                todosLosTurnos.remove(turno)
 
-                filtrarTurnos()
+                val eliminado = TurnosRepository.cancelarTurno(turno.id)
 
-                Toast.makeText(
-                    this,
-                    "Turno cancelado correctamente.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (eliminado) {
+                    filtrarTurnos()
+
+                    Toast.makeText(
+                        this,
+                        "Turno cancelado correctamente.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "No se encontró el turno.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
             .setNegativeButton("No", null)
             .show()

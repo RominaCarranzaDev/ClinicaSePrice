@@ -1,3 +1,4 @@
+
 package com.example.clinicaseprice
 
 import android.os.Bundle
@@ -17,7 +18,6 @@ class NuevoPacienteActivity : BaseActivity() {
     private lateinit var btnGuardar: Button
     private lateinit var btnCancelar: Button
 
-    // -1 significa que estamos registrando un paciente nuevo.
     private var pacienteId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,16 +27,11 @@ class NuevoPacienteActivity : BaseActivity() {
         pacienteId = intent.getIntExtra("paciente_id", -1)
 
         configurarPantalla(
-            titulo = if (pacienteId == -1) {
-                "Nuevo Paciente"
-            } else {
-                "Editar Paciente"
-            },
-            subtitulo = if (pacienteId == -1) {
+            titulo = if (pacienteId == -1) "Nuevo Paciente" else "Editar Paciente",
+            subtitulo = if (pacienteId == -1)
                 "Alta e ingreso al sistema."
-            } else {
-                "Modificá los datos del paciente."
-            },
+            else
+                "Modificá los datos del paciente.",
             layoutContenido = R.layout.activity_nuevo_paciente,
             opcionActiva = "pacientes"
         )
@@ -48,7 +43,6 @@ class NuevoPacienteActivity : BaseActivity() {
         btnGuardar = findViewById(R.id.btnGuardarPaciente)
         btnCancelar = findViewById(R.id.btnCancelarPaciente)
 
-        // Si recibimos un ID, cargamos los datos para editarlos.
         if (pacienteId != -1) {
             cargarDatosPaciente()
         }
@@ -63,17 +57,14 @@ class NuevoPacienteActivity : BaseActivity() {
     }
 
     private fun cargarDatosPaciente() {
-        val paciente = PacientesRepository.pacientes.find {
-            it.id == pacienteId
-        }
+        val paciente = PacientesRepository.buscarPorId(pacienteId)
 
         if (paciente == null) {
             Toast.makeText(
                 this,
-                "No se encontró el paciente",
+                "No se encontró el paciente.",
                 Toast.LENGTH_SHORT
             ).show()
-
             finish()
             return
         }
@@ -82,12 +73,11 @@ class NuevoPacienteActivity : BaseActivity() {
         etDni.setText(paciente.dni)
         etTelefono.setText(paciente.telefono)
 
-        // Seleccionar la obra social que ya tenía.
-        val opciones = spObraSocial.adapter
+        val adapter = spObraSocial.adapter
 
-        for (i in 0 until opciones.count) {
+        for (i in 0 until adapter.count) {
             if (
-                opciones.getItem(i).toString()
+                adapter.getItem(i).toString()
                     .equals(paciente.obraSocial, ignoreCase = true)
             ) {
                 spObraSocial.setSelection(i)
@@ -100,77 +90,67 @@ class NuevoPacienteActivity : BaseActivity() {
         val nombre = etNombre.text.toString().trim()
         val dni = etDni.text.toString().trim()
         val telefono = etTelefono.text.toString().trim()
-        val obraSocial = spObraSocial.selectedItem?.toString() ?: ""
+        val obraSocial = spObraSocial.selectedItem?.toString().orEmpty()
 
-        // Validar campos obligatorios.
-        if (
-            nombre.isEmpty() ||
-            dni.isEmpty() ||
-            telefono.isEmpty()
-        ) {
+        if (nombre.isBlank() || dni.isBlank() || telefono.isBlank()) {
             Toast.makeText(
                 this,
-                "Completá todos los campos obligatorios",
+                "Completá todos los campos obligatorios.",
                 Toast.LENGTH_SHORT
             ).show()
-
             return
         }
 
-        // Evitar DNI duplicados, excepto el del propio paciente editado.
-        val dniExistente = PacientesRepository.pacientes.any {
-            it.dni == dni && it.id != pacienteId
-        }
+        try {
+            if (pacienteId == -1) {
+                // El repositorio valida el DNI y registra el paciente.
+                PacientesRepository.agregarPaciente(
+                    nombre = nombre,
+                    dni = dni,
+                    telefono = telefono,
+                    obraSocial = obraSocial
+                )
 
-        if (dniExistente) {
-            etDni.error = "Ya existe otro paciente con ese DNI"
-            return
-        }
-
-        if (pacienteId == -1) {
-
-            // Registrar un paciente nuevo.
-            PacientesRepository.agregarPaciente(
-                nombre = nombre,
-                dni = dni,
-                telefono = telefono,
-                obraSocial = obraSocial
-            )
-
-        } else {
-
-            // Actualizar el paciente existente.
-            val paciente = PacientesRepository.pacientes.find {
-                it.id == pacienteId
-            }
-
-            if (paciente == null) {
                 Toast.makeText(
                     this,
-                    "No se encontró el paciente",
+                    "Paciente registrado con éxito.",
                     Toast.LENGTH_SHORT
                 ).show()
 
-                return
+            } else {
+                // La actualización también se realiza desde el repositorio.
+                val actualizado = PacientesRepository.actualizarPaciente(
+                    id = pacienteId,
+                    nombre = nombre,
+                    dni = dni,
+                    telefono = telefono,
+                    obraSocial = obraSocial
+                )
+
+                if (!actualizado) {
+                    Toast.makeText(
+                        this,
+                        "No se encontró el paciente.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return
+                }
+
+                Toast.makeText(
+                    this,
+                    "Datos del paciente actualizados.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
-            paciente.nombreCompleto = nombre
-            paciente.dni = dni
-            paciente.telefono = telefono
-            paciente.obraSocial = obraSocial
+            finish()
+
+        } catch (e: IllegalArgumentException) {
+            Toast.makeText(
+                this,
+                e.message ?: "No se pudieron guardar los datos.",
+                Toast.LENGTH_LONG
+            ).show()
         }
-
-        Toast.makeText(
-            this,
-            if (pacienteId == -1) {
-                "Paciente registrado con éxito"
-            } else {
-                "Datos del paciente actualizados"
-            },
-            Toast.LENGTH_SHORT
-        ).show()
-
-        // Volver al listado actualizado.
-        finish()
     }
 }

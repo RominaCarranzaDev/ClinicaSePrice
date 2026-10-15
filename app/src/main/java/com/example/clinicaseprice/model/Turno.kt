@@ -10,5 +10,6 @@ data class Turno(
     var estado: String,
     var medicoId: Int = 0,
     var nombreMedico: String = "Sin asignar",
-    var esSobreturno: Boolean = false
+    var esSobreturno: Boolean = false,
+    var pacienteId: Int = 0
 )

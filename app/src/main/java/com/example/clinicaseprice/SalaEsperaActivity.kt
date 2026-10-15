@@ -75,24 +75,19 @@ class SalaEsperaActivity : BaseActivity() {
 
         val busquedaDni = busqueda.filter { it.isDigit() }
 
-        val pacientesAcreditados = TurnosRepository.turnos.filter { turno ->
-
-            val estaAcreditado = turno.estado == "Acreditado"
+        val pacientesAcreditados = TurnosRepository.obtenerTodos().filter { turno ->
+            val estaAcreditado = turno.estado.equals("Acreditado", ignoreCase = true)
 
             val coincideNombre =
                 turno.nombrePaciente.lowercase().contains(busqueda)
 
-            val dniPaciente =
-                turno.dniPaciente.filter { it.isDigit() }
+            val dniPaciente = turno.dniPaciente.filter { it.isDigit() }
 
             val coincideDni =
-                busquedaDni.isNotEmpty() &&
-                        dniPaciente.contains(busquedaDni)
+                busquedaDni.isNotEmpty() && dniPaciente.contains(busquedaDni)
 
             val coincideBusqueda =
-                busqueda.isEmpty() ||
-                        coincideNombre ||
-                        coincideDni
+                busqueda.isEmpty() || coincideNombre || coincideDni
 
             estaAcreditado && coincideBusqueda
         }
@@ -100,19 +95,17 @@ class SalaEsperaActivity : BaseActivity() {
         adaptador = SalaEsperaAdapter(pacientesAcreditados)
         rvSalaEspera.adapter = adaptador
 
-        tvVacia.visibility =
-            if (pacientesAcreditados.isEmpty()) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+        tvVacia.visibility = if (pacientesAcreditados.isEmpty()) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
 
-        tvVacia.text =
-            if (busqueda.isEmpty()) {
-                "No hay pacientes en sala de espera."
-            } else {
-                "No se encontraron pacientes con esa búsqueda."
-            }
+        tvVacia.text = if (busqueda.isEmpty()) {
+            "No hay pacientes en sala de espera."
+        } else {
+            "No se encontraron pacientes con esa búsqueda."
+        }
     }
    // Actualizá la sala de espera al volver a la pantalla
     override fun onResume() {

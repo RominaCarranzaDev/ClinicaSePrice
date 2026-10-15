@@ -1,5 +1,6 @@
 package com.example.clinicaseprice.repository
 
+import com.example.clinicaseprice.model.Consultorio
 import com.example.clinicaseprice.model.FranjaHoraria
 import com.example.clinicaseprice.model.Medico
 import java.text.SimpleDateFormat
@@ -18,25 +19,27 @@ object MedicosRepository {
         Medico(
             id = 1,
             nombre = "Dr. Gómez",
-            consultorio = "1",
+            consultorioAsignado = Consultorio.CONSULTORIO_1,
             horarios = mapOf(
                 lunes to listOf(FranjaHoraria(8, 12)),
                 miercoles to listOf(FranjaHoraria(8, 12))
             )
         ),
+
         Medico(
             id = 2,
             nombre = "Dra. López",
-            consultorio = "2",
+            consultorioAsignado = Consultorio.CONSULTORIO_2,
             horarios = mapOf(
                 martes to listOf(FranjaHoraria(14, 18)),
                 jueves to listOf(FranjaHoraria(14, 18))
             )
         ),
+
         Medico(
             id = 3,
             nombre = "Dr. Rodríguez",
-            consultorio = "3",
+            consultorioAsignado = Consultorio.CONSULTORIO_3,
             horarios = mapOf(
                 lunes to listOf(FranjaHoraria(14, 18)),
                 martes to listOf(FranjaHoraria(8, 12)),
@@ -78,6 +81,7 @@ object MedicosRepository {
         fecha: String,
         horario: String
     ): Boolean {
+
         val formato = SimpleDateFormat(
             "dd/MM/yyyy",
             Locale.getDefault()
@@ -108,4 +112,3 @@ object MedicosRepository {
         }
     }
 }
-
