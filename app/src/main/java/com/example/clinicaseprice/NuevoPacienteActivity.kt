@@ -1,7 +1,8 @@
-
 package com.example.clinicaseprice
 
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
@@ -12,8 +13,14 @@ import com.example.clinicaseprice.repository.PacientesRepository
 class NuevoPacienteActivity : BaseActivity() {
 
     private lateinit var etNombre: EditText
+    private lateinit var etApellido: EditText
     private lateinit var etDni: EditText
+    private lateinit var etFechaNacimiento: EditText
     private lateinit var etTelefono: EditText
+    private lateinit var etDomicilio: EditText
+    private lateinit var etEmail: EditText
+    private lateinit var etNumeroObraSocial: EditText
+
     private lateinit var spObraSocial: Spinner
     private lateinit var btnGuardar: Button
     private lateinit var btnCancelar: Button
@@ -31,17 +38,25 @@ class NuevoPacienteActivity : BaseActivity() {
             subtitulo = if (pacienteId == -1)
                 "Alta e ingreso al sistema."
             else
-                "Modificá los datos del paciente.",
+                "Modificá los datos personales del paciente.",
             layoutContenido = R.layout.activity_nuevo_paciente,
             opcionActiva = "pacientes"
         )
 
         etNombre = findViewById(R.id.etNuevoNombre)
+        etApellido = findViewById(R.id.etNuevoApellido)
         etDni = findViewById(R.id.etNuevoDni)
+        etFechaNacimiento = findViewById(R.id.etNuevoFechaNacimiento)
         etTelefono = findViewById(R.id.etNuevoTelefono)
+        etDomicilio = findViewById(R.id.etNuevoDomicilio)
+        etEmail = findViewById(R.id.etNuevoEmail)
+        etNumeroObraSocial = findViewById(R.id.etNuevoNumeroObraSocial)
+
         spObraSocial = findViewById(R.id.spNuevoObraSocial)
         btnGuardar = findViewById(R.id.btnGuardarPaciente)
         btnCancelar = findViewById(R.id.btnCancelarPaciente)
+
+        configurarObraSocial()
 
         if (pacienteId != -1) {
             cargarDatosPaciente()
@@ -56,6 +71,40 @@ class NuevoPacienteActivity : BaseActivity() {
         }
     }
 
+    private fun configurarObraSocial() {
+        spObraSocial.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val obraSocial = spObraSocial.selectedItem
+                        ?.toString()
+                        .orEmpty()
+
+                    val esParticular =
+                        obraSocial.equals("Particular", ignoreCase = true)
+
+                    etNumeroObraSocial.isEnabled = !esParticular
+
+                    if (esParticular) {
+                        etNumeroObraSocial.setText("")
+                        etNumeroObraSocial.hint = "No corresponde"
+                    } else {
+                        etNumeroObraSocial.hint = "Número de afiliado"
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    etNumeroObraSocial.isEnabled = true
+                    etNumeroObraSocial.hint = "Número de afiliado"
+                }
+            }
+    }
+
     private fun cargarDatosPaciente() {
         val paciente = PacientesRepository.buscarPorId(pacienteId)
 
@@ -65,13 +114,20 @@ class NuevoPacienteActivity : BaseActivity() {
                 "No se encontró el paciente.",
                 Toast.LENGTH_SHORT
             ).show()
+
             finish()
             return
         }
 
-        etNombre.setText(paciente.nombreCompleto)
+        etNombre.setText(
+            paciente.nombre.ifBlank { paciente.nombreCompleto }
+        )
+        etApellido.setText(paciente.apellido)
         etDni.setText(paciente.dni)
+        etFechaNacimiento.setText(paciente.fechaNacimiento)
         etTelefono.setText(paciente.telefono)
+        etDomicilio.setText(paciente.domicilio)
+        etEmail.setText(paciente.email)
 
         val adapter = spObraSocial.adapter
 
@@ -84,18 +140,40 @@ class NuevoPacienteActivity : BaseActivity() {
                 break
             }
         }
+
+        if (!paciente.obraSocial.equals("Particular", ignoreCase = true)) {
+            etNumeroObraSocial.setText(paciente.numeroObraSocial)
+        }
     }
 
     private fun guardarPaciente() {
         val nombre = etNombre.text.toString().trim()
+        val apellido = etApellido.text.toString().trim()
         val dni = etDni.text.toString().trim()
+        val fechaNacimiento = etFechaNacimiento.text.toString().trim()
         val telefono = etTelefono.text.toString().trim()
-        val obraSocial = spObraSocial.selectedItem?.toString().orEmpty()
+        val domicilio = etDomicilio.text.toString().trim()
+        val email = etEmail.text.toString().trim()
 
-        if (nombre.isBlank() || dni.isBlank() || telefono.isBlank()) {
+        val obraSocial = spObraSocial.selectedItem
+            ?.toString()
+            .orEmpty()
+
+        val esParticular =
+            obraSocial.equals("Particular", ignoreCase = true)
+
+        val numeroObraSocial = if (esParticular) {
+            ""
+        } else {
+            etNumeroObraSocial.text.toString().trim()
+        }
+
+        if (nombre.isBlank() || apellido.isBlank() ||
+            dni.isBlank() || telefono.isBlank()
+        ) {
             Toast.makeText(
                 this,
-                "Completá todos los campos obligatorios.",
+                "Completá nombre, apellido, DNI y teléfono.",
                 Toast.LENGTH_SHORT
             ).show()
             return
@@ -103,12 +181,16 @@ class NuevoPacienteActivity : BaseActivity() {
 
         try {
             if (pacienteId == -1) {
-                // El repositorio valida el DNI y registra el paciente.
                 PacientesRepository.agregarPaciente(
                     nombre = nombre,
+                    apellido = apellido,
                     dni = dni,
                     telefono = telefono,
-                    obraSocial = obraSocial
+                    obraSocial = obraSocial,
+                    fechaNacimiento = fechaNacimiento,
+                    domicilio = domicilio,
+                    email = email,
+                    numeroObraSocial = numeroObraSocial
                 )
 
                 Toast.makeText(
@@ -118,13 +200,17 @@ class NuevoPacienteActivity : BaseActivity() {
                 ).show()
 
             } else {
-                // La actualización también se realiza desde el repositorio.
                 val actualizado = PacientesRepository.actualizarPaciente(
                     id = pacienteId,
                     nombre = nombre,
+                    apellido = apellido,
                     dni = dni,
                     telefono = telefono,
-                    obraSocial = obraSocial
+                    obraSocial = obraSocial,
+                    fechaNacimiento = fechaNacimiento,
+                    domicilio = domicilio,
+                    email = email,
+                    numeroObraSocial = numeroObraSocial
                 )
 
                 if (!actualizado) {

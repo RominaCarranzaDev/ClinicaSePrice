@@ -47,12 +47,12 @@
         android:textColor="#475569"
         android:textSize="13sp" />
 
-    <!-- Obra social -->
+    <!-- Obra social / Particular -->
     <TextView
         android:id="@+id/tvObraSocial"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.3"
+        android:layout_weight="1.7"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
@@ -60,27 +60,7 @@
         android:textColor="#475569"
         android:textSize="13sp" />
 
-    <!-- Estado del paciente -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.4"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/tvEstado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_badge_confirmado"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
-            android:text="CONFIRMADO"
-            android:textColor="#166534"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <!-- Ficha: antes de Editar -->
+    <!-- Botón Ficha -->
     <ImageButton
         android:id="@+id/btnFicha"
         android:layout_width="36dp"
@@ -92,7 +72,7 @@
         android:src="@android:drawable/ic_menu_info_details"
         android:tint="#475569" />
 
-    <!-- Editar: último botón de la fila -->
+    <!-- Botón Editar -->
     <ImageButton
         android:id="@+id/btnEditar"
         android:layout_width="36dp"

@@ -1,3 +1,4 @@
+
 package com.example.clinicaseprice
 
 import android.content.Intent
@@ -9,7 +10,6 @@ import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.adapter.PacienteAdapter
@@ -19,7 +19,6 @@ import com.example.clinicaseprice.repository.PacientesRepository
 class ConsultoriosPacientesActivity : BaseActivity() {
 
     private lateinit var rvPacientes: RecyclerView
-    private lateinit var spEstado: Spinner
     private lateinit var spObraSocial: Spinner
     private lateinit var btnNuevoPaciente: Button
     private lateinit var adapter: PacienteAdapter
@@ -30,7 +29,6 @@ class ConsultoriosPacientesActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
         configurarPantalla(
             titulo = "Pacientes",
@@ -40,11 +38,8 @@ class ConsultoriosPacientesActivity : BaseActivity() {
         )
 
         rvPacientes = findViewById(R.id.rvPacientes)
-        spEstado = findViewById(R.id.spEstado)
         spObraSocial = findViewById(R.id.spObraSocial)
         btnNuevoPaciente = findViewById(R.id.btnNuevoPaciente)
-
-
         edtBuscarPaciente = findViewById(R.id.edtBuscarPaciente)
 
         configurarRecyclerView()
@@ -52,7 +47,10 @@ class ConsultoriosPacientesActivity : BaseActivity() {
         configurarBuscador()
 
         btnNuevoPaciente.setOnClickListener {
-            val intent = Intent(this, NuevoPacienteActivity::class.java)
+            val intent = Intent(
+                this,
+                NuevoPacienteActivity::class.java
+            )
             startActivity(intent)
         }
     }
@@ -78,10 +76,6 @@ class ConsultoriosPacientesActivity : BaseActivity() {
                 startActivity(intent)
             },
 
-            onEstadoClick = { paciente ->
-                cambiarEstado(paciente)
-            },
-
             onEditClick = { paciente ->
                 val intent = Intent(
                     this,
@@ -97,24 +91,24 @@ class ConsultoriosPacientesActivity : BaseActivity() {
     }
 
     private fun configurarSpinners() {
-        val listener = object : AdapterView.OnItemSelectedListener {
+        spObraSocial.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
 
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                aplicarFiltros()
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    aplicarFiltros()
+                }
+
+                override fun onNothingSelected(
+                    parent: AdapterView<*>?
+                ) {
+                    // No se necesita realizar ninguna acción.
+                }
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // No se necesita realizar ninguna acción.
-            }
-        }
-
-        spEstado.onItemSelectedListener = listener
-        spObraSocial.onItemSelectedListener = listener
     }
 
     private fun configurarBuscador() {
@@ -153,25 +147,20 @@ class ConsultoriosPacientesActivity : BaseActivity() {
 
         val dniBuscado = textoBusqueda.filter { it.isDigit() }
 
-        val estadoSeleccionado = spEstado.selectedItem
-            ?.toString()
-            ?.replace("Estado:", "")
-            ?.trim()
-            ?: "Todos"
-
-        val obraSocialSeleccionada = spObraSocial.selectedItem
-            ?.toString()
-            ?.replace("Obra Social:", "")
-            ?.trim()
-            ?: "Todas"
+        val obraSocialSeleccionada =
+            spObraSocial.selectedItem?.toString()
+                ?.replace("Obra Social:", "")
+                ?.trim()
+                ?: "Todas"
 
         val listaFiltrada = listaPacientesOriginal.filter { paciente ->
 
-            // Buscar por nombre o DNI.
+            // Buscar por nombre.
             val coincideNombre =
                 paciente.nombreCompleto.lowercase()
                     .contains(textoBusqueda)
 
+            // Buscar por DNI.
             val dniPaciente = paciente.dni.filter { it.isDigit() }
 
             val coincideDni =
@@ -183,45 +172,24 @@ class ConsultoriosPacientesActivity : BaseActivity() {
                         coincideNombre ||
                         coincideDni
 
-            // Filtrar por estado.
-            val coincideEstado =
-                estadoSeleccionado.equals("Todos", ignoreCase = true) ||
-                        estadoSeleccionado.equals("Estado", ignoreCase = true) ||
-                        paciente.estado.equals(
-                            estadoSeleccionado,
-                            ignoreCase = true
-                        )
-
-            // Filtrar por obra social.
+            // Filtrar por obra social o Particular.
             val coincideObraSocial =
-                obraSocialSeleccionada.equals("Todas", ignoreCase = true) ||
-                        obraSocialSeleccionada.equals("Obra Social", ignoreCase = true) ||
+                obraSocialSeleccionada.equals(
+                    "Todas",
+                    ignoreCase = true
+                ) ||
+                        obraSocialSeleccionada.equals(
+                            "Obra Social",
+                            ignoreCase = true
+                        ) ||
                         paciente.obraSocial.equals(
                             obraSocialSeleccionada,
                             ignoreCase = true
                         )
 
-            coincideTexto && coincideEstado && coincideObraSocial
+            coincideTexto && coincideObraSocial
         }
 
         adapter.actualizarLista(listaFiltrada)
-    }
-
-
-    private fun cambiarEstado(paciente: Paciente) {
-        val nuevoEstado = when (paciente.estado.uppercase()) {
-            "PENDIENTE" -> "CONFIRMADO"
-            "CONFIRMADO" -> "CANCELADO"
-            else -> "PENDIENTE"
-        }
-
-        val actualizado = PacientesRepository.actualizarEstado(
-            paciente.id,
-            nuevoEstado
-        )
-
-        if (actualizado) {
-            aplicarFiltros()
-        }
     }
 }

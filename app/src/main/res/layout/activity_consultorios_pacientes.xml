@@ -17,15 +17,6 @@
         android:orientation="horizontal">
 
         <Spinner
-            android:id="@+id/spEstado"
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            android:background="@drawable/bg_spinner"
-            android:entries="@array/array_estados"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
-
-        <Spinner
             android:id="@+id/spObraSocial"
             android:layout_width="wrap_content"
             android:layout_height="38dp"
@@ -51,6 +42,7 @@
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
+
     </LinearLayout>
 
     <!-- TABLA DE PACIENTES -->
@@ -64,7 +56,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp">
 
-        <!-- ENCABEZADOS: MISMO ORDEN Y PESOS QUE LAS FILAS -->
+        <!-- ENCABEZADOS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -108,26 +100,16 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.3"
+                android:layout_weight="1.7"
                 android:gravity="center"
-                android:text="Obra social"
+                android:text="Obra social / Particular"
                 android:textColor="#475569"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.4"
-                android:gravity="center"
-                android:text="Estado"
-                android:textColor="#475569"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <!-- Espacio reservado para los dos botones -->
+            <!-- ESPACIO RESERVADO PARA LOS DOS BOTONES -->
             <LinearLayout
-                android:layout_width="76dp"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -149,14 +131,18 @@
                     android:textColor="#475569"
                     android:textSize="10sp"
                     android:textStyle="bold" />
+
             </LinearLayout>
+
         </LinearLayout>
 
+        <!-- SEPARADOR -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#E2E8F0" />
 
+        <!-- LISTADO DE PACIENTES -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPacientes"
             android:layout_width="match_parent"
