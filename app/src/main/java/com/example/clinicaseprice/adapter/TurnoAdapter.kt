@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.R
 import com.example.clinicaseprice.model.Turno
+import com.example.clinicaseprice.repository.PacientesRepository
 
 class TurnoAdapter(
     private val listaTurnos: MutableList<Turno>,
@@ -45,38 +46,55 @@ class TurnoAdapter(
         return TurnoViewHolder(vista)
     }
 
+
     override fun onBindViewHolder(
         holder: TurnoViewHolder,
         position: Int
     ) {
         val turno = listaTurnos[position]
 
-        holder.tvPaciente.text = turno.nombrePaciente
+        val paciente = PacientesRepository.buscarPorId(
+            turno.pacienteId
+        )
+
+        holder.tvPaciente.text =
+            paciente?.nombreCompleto ?: "Paciente no encontrado"
 
         val tipoTurno = if (turno.esSobreturno) {
             "SOBRETURNO"
         } else {
-            "Turno normal"
+            ""
         }
 
         holder.tvDetalles.text =
-            "DNI: ${turno.dniPaciente}\n" +
+            "DNI: ${paciente?.dni ?: "No disponible"}\n" +
                     "Médico: ${turno.nombreMedico}\n" +
                     "Fecha: ${turno.fecha}\n" +
                     "Horario: ${turno.horario}\n" +
                     "Consultorio: ${turno.consultorio}\n" +
-                    "Tipo: $tipoTurno\n" +
-                    "Estado: ${turno.estado}"
+                    "Estado: ${turno.estado}" +
+                    "$tipoTurno\n"
 
+        val yaAcreditado = turno.estado.equals(
+            "ACREDITADO",
+            ignoreCase = true
+        )
+
+        // Botón Modificar
+        holder.btnModificar.isEnabled = !yaAcreditado
         holder.btnModificar.setOnClickListener {
-            onModificar(turno)
+            if (!yaAcreditado) {
+                onModificar(turno)
+            }
         }
 
+        // Botón Cancelar
+        holder.btnCancelar.isEnabled = !yaAcreditado
         holder.btnCancelar.setOnClickListener {
-            onCancelar(turno)
+            if (!yaAcreditado) {
+                onCancelar(turno)
+            }
         }
-
-        val yaAcreditado = turno.estado == "Acreditado"
 
         holder.btnAcreditar.text =
             if (yaAcreditado) {
