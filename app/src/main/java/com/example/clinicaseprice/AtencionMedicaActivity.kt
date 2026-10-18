@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.model.Turno
 import com.example.clinicaseprice.repository.TurnosRepository
 import android.widget.Toast
+import com.example.clinicaseprice.repository.PacientesRepository
 
 class AtencionMedicaActivity : AppCompatActivity() {
 
@@ -192,14 +193,16 @@ class AtencionMedicaActivity : AppCompatActivity() {
         val turno = pacientesEnEspera[0]
 
         // Mostrar el nombre completo
-        tvNombrePaciente.text = turno.nombrePaciente
+        val paciente = PacientesRepository.buscarPorId(turno.pacienteId)
+        tvNombrePaciente.text = paciente?.nombreCompleto ?: "Paciente no encontrado"
 
         // Calcular las iniciales
-        val iniciales = turno.nombrePaciente
-            .trim()
-            .split(Regex("\\s+"))
-            .mapNotNull { it.firstOrNull()?.uppercase() }
-            .joinToString("")
+        val iniciales = paciente?.nombreCompleto
+            ?.trim()
+            ?.split(Regex("\\s+"))
+            ?.mapNotNull { it.firstOrNull()?.uppercase() }
+            ?.joinToString("")
+            ?: "?"
 
         tvInicialesPaciente.text = iniciales
 

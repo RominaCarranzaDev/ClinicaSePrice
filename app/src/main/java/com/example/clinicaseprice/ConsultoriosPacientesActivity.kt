@@ -75,15 +75,6 @@ class ConsultoriosPacientesActivity : BaseActivity() {
                 intent.putExtra("paciente_id", paciente.id)
                 startActivity(intent)
             },
-
-            onEditClick = { paciente ->
-                val intent = Intent(
-                    this,
-                    NuevoPacienteActivity::class.java
-                )
-                intent.putExtra("paciente_id", paciente.id)
-                startActivity(intent)
-            }
         )
 
         rvPacientes.layoutManager = LinearLayoutManager(this)

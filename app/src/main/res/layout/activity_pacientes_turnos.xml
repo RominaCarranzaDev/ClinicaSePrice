@@ -14,21 +14,37 @@
         android:textStyle="bold"
         android:paddingBottom="16dp" />
 
-    <Button
-        android:id="@+id/btnNuevoTurno"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="+ Asignar turno"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#1976D2"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_m">
 
-    <Spinner
-        android:id="@+id/spEstadoTurno"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp" />
+        <Spinner
+            android:id="@+id/spEstadoTurno"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="2" />
+
+        <Button
+            android:id="@+id/btnNuevoTurno"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+ Asignar turno"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/primary"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTurnos"

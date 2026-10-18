@@ -34,14 +34,14 @@
         <Button
             android:id="@+id/btnNuevoPaciente"
             android:layout_width="wrap_content"
-            android:layout_height="38dp"
+            android:layout_height="wrap_content"
             android:backgroundTint="@color/primary"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:text="+ Nuevo Paciente"
             android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="13sp" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_button" />
 
     </LinearLayout>
 
@@ -70,10 +70,10 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2.2"
+                android:layout_weight="2"
                 android:gravity="start"
                 android:text="Nombre completo"
-                android:textColor="#475569"
+                android:textColor="@color/shadow"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -83,17 +83,7 @@
                 android:layout_weight="1.1"
                 android:gravity="center"
                 android:text="DNI"
-                android:textColor="#475569"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.4"
-                android:gravity="center"
-                android:text="Teléfono"
-                android:textColor="#475569"
+                android:textColor="@color/shadow"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -103,7 +93,27 @@
                 android:layout_weight="1.7"
                 android:gravity="center"
                 android:text="Obra social / Particular"
-                android:textColor="#475569"
+                android:textColor="@color/shadow"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.4"
+                android:gravity="center"
+                android:text="Correo electrónico"
+                android:textColor="@color/shadow"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.4"
+                android:gravity="center"
+                android:text="Teléfono"
+                android:textColor="@color/shadow"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -115,20 +125,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="36dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Ficha"
-                    android:textColor="#475569"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="36dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Editar"
-                    android:textColor="#475569"
+                    android:textColor="@color/shadow"
                     android:textSize="10sp"
                     android:textStyle="bold" />
 
@@ -140,7 +141,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E2E8F0" />
+            android:background="@color/shadow" />
 
         <!-- LISTADO DE PACIENTES -->
         <androidx.recyclerview.widget.RecyclerView

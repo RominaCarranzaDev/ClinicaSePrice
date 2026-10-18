@@ -1,5 +1,6 @@
 package com.example.clinicaseprice
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.adapter.TurnoAdapter
@@ -24,13 +26,16 @@ import com.example.clinicaseprice.model.Turno
 import com.example.clinicaseprice.repository.MedicosRepository
 import com.example.clinicaseprice.repository.PacientesRepository
 import com.example.clinicaseprice.repository.TurnosRepository
-
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 class ConsultoriosTurnosActivity : BaseActivity() {
 
     private lateinit var rvTurnos: RecyclerView
     private lateinit var spEstadoTurno: Spinner
     private lateinit var etBuscarTurno: EditText
     private lateinit var adaptador: TurnoAdapter
+    private var paciente: Paciente? = null
 
     // La Activity consulta los turnos desde el repositorio central.
     private fun obtenerTurnos(): List<Turno> {
@@ -39,9 +44,10 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
     private val estados = listOf(
         "Todos",
-        "Pendiente",
-        "Confirmado",
-        "Acreditado"
+        "PENDIENTE",
+        "CONFIRMADO",
+        "ACREDITADO",
+        "CANCELADO"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +65,9 @@ class ConsultoriosTurnosActivity : BaseActivity() {
         spEstadoTurno = findViewById(R.id.spEstadoTurno)
         etBuscarTurno = findViewById(R.id.edtBuscarPaciente)
 
-        rvTurnos.layoutManager = LinearLayoutManager(this)
+        val btnNuevoTurno = findViewById<Button>(R.id.btnNuevoTurno)
+
+        rvTurnos.layoutManager = GridLayoutManager(this, 2)
 
         adaptador = TurnoAdapter(
             mutableListOf(),
@@ -78,12 +86,23 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
         configurarFiltro()
 
-        findViewById<Button>(R.id.btnNuevoTurno)
-            .setOnClickListener {
-                abrirFormularioTurno()
+        btnNuevoTurno.setOnClickListener {
+                val intent = Intent(this, SolicitarTurno::class.java)
+
+                intent.putExtra("pacienteID", paciente?.id)
+
+                startActivity(intent)
             }
 
         filtrarTurnos()
+    }
+
+
+    private fun obtenerFechaHoy(): String {
+        return SimpleDateFormat(
+            "dd/MM/yyyy",
+            Locale.getDefault()
+        ).format(Date())
     }
 
     // Configura el filtro por estado, nombre, DNI o médico.
@@ -145,6 +164,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
     }
 
     // Obtiene la lista centralizada y aplica los filtros de la pantalla.
+
     private fun filtrarTurnos() {
         if (!::adaptador.isInitialized) return
 
@@ -158,20 +178,33 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
         val busquedaDni = busqueda.filter { it.isDigit() }
 
+        val fechaHoy = obtenerFechaHoy()
+
         val resultado = obtenerTurnos().filter { turno ->
+
+            // Mostrar únicamente los turnos de hoy para acreditar solo quienes se atienden en fecha actual
+            val coincideFecha = turno.fecha == fechaHoy
 
             val coincideEstado =
                 estadoSeleccionado == "Todos" ||
                         turno.estado.equals(
-                            estadoSeleccionado,
-                            ignoreCase = true
-                        )
+                        estadoSeleccionado,
+                        ignoreCase = true
+                    )
 
-            val coincideNombre =
-                turno.nombrePaciente.lowercase().contains(busqueda)
+            // Buscar el paciente mediante su ID.
+            paciente = PacientesRepository.buscarPorId(
+                turno.pacienteId
+            )
+
+            val nombrePaciente =
+                paciente?.nombreCompleto.orEmpty().lowercase()
 
             val dniPaciente =
-                turno.dniPaciente.filter { it.isDigit() }
+                paciente?.dni.orEmpty().filter { it.isDigit() }
+
+            val coincideNombre =
+                nombrePaciente.contains(busqueda)
 
             val coincideDni =
                 busquedaDni.isNotEmpty() &&
@@ -186,15 +219,16 @@ class ConsultoriosTurnosActivity : BaseActivity() {
                         coincideDni ||
                         coincideMedico
 
-            coincideEstado && coincideBusqueda
+            coincideFecha && coincideEstado && coincideBusqueda
         }
 
         adaptador.actualizarLista(resultado)
     }
 
+
     // El cambio de estado se solicita al repositorio.
     private fun acreditarTurno(turno: Turno) {
-        if (turno.estado.equals("Acreditado", ignoreCase = true)) {
+        if (turno.estado.equals("ACREDITADO", ignoreCase = true)) {
             Toast.makeText(
                 this,
                 "Este paciente ya está acreditado.",
@@ -205,7 +239,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
         val actualizado = TurnosRepository.actualizarEstado(
             id = turno.id,
-            nuevoEstado = "Acreditado"
+            nuevoEstado = "ACREDITADO"
         )
 
         if (actualizado) {
@@ -315,9 +349,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
         if (turno != null) {
             val indicePaciente = pacientesRegistrados.indexOfFirst {
-                it.id == turno.pacienteId ||
-                        it.dni.filter { c -> c.isDigit() } ==
-                        turno.dniPaciente.filter { c -> c.isDigit() }
+                it.id == turno.pacienteId
             }
 
             if (indicePaciente >= 0) {
@@ -550,17 +582,24 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
     // La cancelación se solicita al repositorio.
     private fun cancelarTurno(turno: Turno) {
+        val paciente = PacientesRepository.buscarPorId(
+            turno.pacienteId
+        )
+
+        val nombrePaciente =
+            paciente?.nombreCompleto ?: "paciente"
+
         AlertDialog.Builder(this)
             .setTitle("Cancelar turno")
             .setMessage(
-                "¿Querés cancelar y eliminar el turno de " +
-                        "${turno.nombrePaciente}?"
+                "¿Querés cancelar el turno de $nombrePaciente?"
             )
             .setPositiveButton("Sí, cancelar") { _, _ ->
 
-                val eliminado = TurnosRepository.cancelarTurno(turno.id)
+                val cancelado =
+                    TurnosRepository.cancelarTurno(turno.id)
 
-                if (eliminado) {
+                if (cancelado) {
                     filtrarTurnos()
 
                     Toast.makeText(
@@ -579,4 +618,5 @@ class ConsultoriosTurnosActivity : BaseActivity() {
             .setNegativeButton("No", null)
             .show()
     }
+
 }
