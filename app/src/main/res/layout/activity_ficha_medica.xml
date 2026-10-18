@@ -2,108 +2,336 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC"
-    android:fillViewport="true">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#F4F6F9"
+    android:fillViewport="true"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:orientation="vertical">
+
+        <!-- ENCABEZADO -->
+        <TextView
+            android:id="@+id/tvTituloFicha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ficha del paciente"
+            style="@style/Title"
+            android:gravity="start"/>
 
         <TextView
+            android:id="@+id/tvSubtituloFicha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ficha médica del paciente"
-            android:textColor="#0F172A"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="20dp"
+            android:text="Información personal e historial de consultas."
+            style="@style/Subtitle" />
 
-        <TextView
-            android:id="@+id/tvDatosPacienteFicha"
-            android:layout_width="match_parent"
+        <!-- HISTORIA CLÍNICA -->
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="#E0F2FE"
-            android:padding="14dp"
-            android:textColor="#1E293B"
-            android:textSize="15sp" />
+            android:layout_marginBottom="20dp"
+            android:background="@color/blur"
+            android:elevation="3dp"
+            android:orientation="vertical"
+            android:padding="18dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Antecedentes médicos"
-            android:textColor="#334155"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NÚMERO DE HISTORIA CLÍNICA"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_small"
+                android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/etAntecedentes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Antecedentes del paciente"
-            android:gravity="top"
-            android:inputType="textMultiLine"
-            android:minLines="3" />
+            <TextView
+                android:id="@+id/tvNumeroHistoriaClinica"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="HC-01"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/text_body"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Alergias"
-            android:textColor="#334155"
-            android:textStyle="bold" />
+        </LinearLayout>
 
-        <EditText
-            android:id="@+id/etAlergias"
+        <!-- DATOS PERSONALES -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Alergias conocidas"
-            android:gravity="top"
-            android:inputType="textMultiLine"
-            android:minLines="2" />
+            android:layout_marginBottom="20dp"
+            android:background="@color/white"
+            android:elevation="2dp"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_m">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Medicación actual"
-            android:textColor="#334155"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Datos personales"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/etMedicacion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Medicación informada"
-            android:gravity="top"
-            android:inputType="textMultiLine"
-            android:minLines="2" />
+            <!-- NOMBRE COMPLETO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombre y apellido"
+                android:textColor="@color/shadow"
+                android:textSize="@dimen/text_body" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Observaciones"
-            android:textColor="#334155"
-            android:textStyle="bold" />
+            <EditText
+                android:id="@+id/etNombreCompleto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="Nombre y apellido"
+                android:inputType="textPersonName|textCapWords"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_body" />
 
-        <EditText
-            android:id="@+id/etObservaciones"
+            <!-- DNI -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DNI"
+                android:textColor="@color/shadow"
+                android:textSize="@dimen/text_body" />
+
+            <EditText
+                android:id="@+id/etDni"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="Número de documento"
+                android:inputType="number"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_body" />
+
+            <!-- FECHA DE NACIMIENTO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fecha de nacimiento"
+                android:textColor="@color/shadow"
+                android:textSize="@dimen/text_body" />
+
+            <EditText
+                android:id="@+id/etFechaNacimiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="DD/MM/AAAA"
+                android:inputType="date"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_body" />
+
+            <!-- OBRA SOCIAL -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Obra social / Particular"
+                android:textColor="@color/shadow"
+                android:textSize="@dimen/text_body" />
+
+            <EditText
+                android:id="@+id/etObraSocial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="Nombre de la obra social / Particular"
+                android:inputType="textCapWords"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_body" />
+
+            <!-- NÚMERO DE AFILIADO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Número de afiliado"
+                android:textColor="@color/shadow"
+                android:textSize="@dimen/text_body" />
+
+            <EditText
+                android:id="@+id/etNumeroObraSocial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Número de afiliado"
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_body" />
+
+            <!-- CORREO ELECTRÓNICO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Correo electrónico"
+                android:textColor="@color/shadow"
+                android:textSize="@dimen/text_body" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="correo@ejemplo.com"
+                android:inputType="textEmailAddress"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_body" />
+
+            <!-- TELÉFONO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Teléfono"
+                android:textColor="@color/shadow"
+                android:textSize="@dimen/text_body" />
+
+            <EditText
+                android:id="@+id/etTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="Número de teléfono"
+                android:inputType="phone"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_body" />
+
+            <!-- DOMICILIO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Domicilio"
+                android:textColor="@color/shadow"
+                android:textSize="@dimen/text_body" />
+
+            <EditText
+                android:id="@+id/etDomicilio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="Calle, número, localidad"
+                android:inputType="textPostalAddress|textCapSentences"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_body" />
+
+
+        </LinearLayout>
+
+        <!-- TURNOS PROGRAMADOS -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Observaciones médicas"
-            android:gravity="top"
-            android:inputType="textMultiLine"
-            android:minLines="3" />
+            android:layout_marginBottom="20dp"
+            android:background="@color/white"
+            android:elevation="2dp"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_m">
+
+            <TextView
+                android:id="@+id/tvTituloTurnos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Turnos programados"
+                android:textColor="#202A44"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
+                android:text="Listado de turnos asociados al paciente."
+                android:textColor="#687386"
+                android:textSize="14sp" />
+
+            <!-- MENSAJE CUANDO NO HAY TURNOS -->
+            <TextView
+                android:id="@+id/tvSinTurnos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="20dp"
+                android:text="Este paciente no tiene turnos programados."
+                android:textColor="#687386"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <!-- LISTA DE TURNOS -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTurnosPaciente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+        </LinearLayout>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <Button
+            android:id="@+id/btnModificar"
+            style="@style/ButtonPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Modificar ficha" />
 
         <Button
-            android:id="@+id/btnGuardarFicha"
+            android:id="@+id/btnVolver"
+            style="@style/ButtonSecondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Guardar ficha médica"
-            android:textAllCaps="false" />
+            android:layout_marginBottom="10dp"
+            android:text="Volver al consultorio" />
+
+        <Button
+            android:id="@+id/btnGuardar"
+            style="@style/ButtonPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            android:text="Guardar" />
+
+        <Button
+            android:id="@+id/btnCancelar"
+            style="@style/ButtonSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            android:text="Cancelar" />
 
     </LinearLayout>
+
 </ScrollView>
