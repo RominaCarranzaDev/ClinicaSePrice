@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Encabezado -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Solicitar turno"
+            style="@style/Title"
+            android:gravity="start"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="24dp"
+            android:text="Seleccioná una especialidad, fecha y horario."
+            style="@style/Subtitle" />
+
+        <!-- Paciente -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Paciente"
+            android:textColor="@color/shadow"
+            android:textSize="@dimen/text_body"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/spPaciente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="#CBD5E1" />
+
+        <!-- Especialidad -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Especialidad"
+            android:textColor="@color/shadow"
+            android:textSize="@dimen/text_body"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/spEspecialidad"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/black" />
+
+        <!-- Calendario -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Elegí un día disponible"
+            android:textColor="@color/shadow"
+            android:textSize="@dimen/text_body"
+            android:textStyle="bold" />
+
+        <CalendarView
+            android:id="@+id/calendarTurnos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:dateTextAppearance="@android:style/TextAppearance.Small" />
+
+        <!-- Fecha seleccionada -->
+        <TextView
+            android:id="@+id/tvFechaSeleccionada"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@color/blur"
+            android:text="Fecha seleccionada: ninguna"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/text_body"
+            android:textStyle="bold" />
+
+        <!-- Horarios -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Horarios disponibles"
+            android:textColor="#0F172A"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvHorariosDisponibles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp" />
+
+
+
+        <!-- Confirmar -->
+        <Button
+            android:id="@+id/btnConfirmarTurno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:minHeight="52dp"
+            android:text="Confirmar turno"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/primary"
+            android:enabled="false" />
+
+        <Button
+            android:id="@+id/btnVolverTurnos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="Volver"
+            android:textColor="@color/primary"
+            android:textAllCaps="false"
+            style="@style/ButtonSecondary"/>
+
+    </LinearLayout>
+
+</ScrollView>
