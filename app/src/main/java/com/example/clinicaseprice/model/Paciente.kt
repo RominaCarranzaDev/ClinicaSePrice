@@ -1,4 +1,3 @@
-
 package com.example.clinicaseprice.model
 
 data class Paciente(
@@ -6,14 +5,19 @@ data class Paciente(
     var nombreCompleto: String,
     var dni: String,
     var telefono: String,
-    var obraSocial: String,
-    var ultimoTurno: String,
-    var estado: String = "PENDIENTE",
-    var isSelected: Boolean = false,
+
+    // Datos opcionales
+    var obraSocial: String = "",
     var nombre: String = "",
     var apellido: String = "",
     var fechaNacimiento: String = "",
     var domicilio: String = "",
     var email: String = "",
-    var numeroObraSocial: String = ""
+    var numeroObraSocial: String = "",
+    var isSelected : Boolean = false,
+    var numeroHistoriaClinica: String = "",
+
+
+    // Historial de turnos
+    var turnos: MutableList<Turno> = mutableListOf()
 )

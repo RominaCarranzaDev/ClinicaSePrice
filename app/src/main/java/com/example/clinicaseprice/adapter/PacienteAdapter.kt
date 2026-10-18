@@ -25,7 +25,6 @@ class PacienteAdapter(
         val tvObraSocial: TextView = itemView.findViewById(R.id.tvObraSocial)
 
         val btnFicha: ImageButton = itemView.findViewById(R.id.btnFicha)
-        val btnEditar: ImageButton = itemView.findViewById(R.id.btnEditar)
     }
 
     override fun onCreateViewHolder(
@@ -51,10 +50,6 @@ class PacienteAdapter(
 
         holder.btnFicha.setOnClickListener {
             onItemClick(paciente)
-        }
-
-        holder.btnEditar.setOnClickListener {
-            onEditClick(paciente)
         }
 
         holder.itemView.setOnClickListener {

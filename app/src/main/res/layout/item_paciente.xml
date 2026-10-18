@@ -1,87 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/containerFila"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingStart="12dp"
-    android:paddingTop="10dp"
-    android:paddingEnd="12dp"
-    android:paddingBottom="10dp">
+    android:orientation="vertical">
 
-    <!-- Nombre completo -->
-    <TextView
-        android:id="@+id/tvNombre"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/containerFila"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2.2"
-        android:ellipsize="end"
-        android:gravity="start|center_vertical"
-        android:maxLines="1"
-        android:text="Sofía Valentina Martínez"
-        android:textColor="#0F172A"
-        android:textSize="13sp"
-        android:textStyle="bold" />
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="10dp">
 
-    <!-- DNI -->
-    <TextView
-        android:id="@+id/tvDni"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.1"
-        android:gravity="center"
-        android:text="38.241.902"
-        android:textColor="#475569"
-        android:textSize="13sp" />
+        <!-- Nombre completo -->
+        <TextView
+            android:id="@+id/tvNombre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.2"
+            android:ellipsize="end"
+            android:gravity="start|center_vertical"
+            android:maxLines="1"
+            android:text="Sofía Valentina Martínez"
+            android:textColor="#0F172A"
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
-    <!-- Teléfono -->
-    <TextView
-        android:id="@+id/tvTelefono"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.4"
-        android:gravity="center"
-        android:text="+54 9 11 4059-1921"
-        android:textColor="#475569"
-        android:textSize="13sp" />
+        <!-- DNI -->
+        <TextView
+            android:id="@+id/tvDni"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.1"
+            android:gravity="center"
+            android:text="38.241.902"
+            android:textColor="#475569"
+            android:textSize="13sp" />
 
-    <!-- Obra social / Particular -->
-    <TextView
-        android:id="@+id/tvObraSocial"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.7"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="OSDE"
-        android:textColor="#475569"
-        android:textSize="13sp" />
+        <!-- Obra social / Particular -->
+        <TextView
+            android:id="@+id/tvObraSocial"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="OSDE"
+            android:textColor="#475569"
+            android:textSize="13sp" />
 
-    <!-- Botón Ficha -->
-    <ImageButton
-        android:id="@+id/btnFicha"
-        android:layout_width="36dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="4dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Ver ficha médica"
-        android:padding="8dp"
-        android:src="@android:drawable/ic_menu_info_details"
-        android:tint="#475569" />
+        <!-- Email -->
+        <TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.4"
+            android:gravity="center"
+            android:text="name@email.com"
+            android:textColor="#475569"
+            android:textSize="13sp" />
 
-    <!-- Botón Editar -->
-    <ImageButton
-        android:id="@+id/btnEditar"
-        android:layout_width="36dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="4dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Editar paciente"
-        android:padding="8dp"
-        android:src="@android:drawable/ic_menu_edit"
-        android:tint="#2563EB" />
+        <!-- Teléfono -->
+        <TextView
+            android:id="@+id/tvTelefono"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.4"
+            android:gravity="center"
+            android:text="+54 9 11 4059-1921"
+            android:textColor="#475569"
+            android:textSize="13sp" />
+
+        <!-- Botón Ficha -->
+        <ImageButton
+            android:id="@+id/btnFicha"
+            android:layout_width="36dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Ver ficha médica"
+            android:padding="8dp"
+            android:src="@android:drawable/ic_menu_info_details"
+            app:tint="#475569" />
+
+    </LinearLayout>
+
+    <!-- Separador -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@color/blur" />
 
 </LinearLayout>
