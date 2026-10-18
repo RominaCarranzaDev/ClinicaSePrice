@@ -1,4 +1,3 @@
-
 package com.example.clinicaseprice
 
 import android.view.LayoutInflater
@@ -7,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.model.Turno
+import com.example.clinicaseprice.repository.PacientesRepository
 
 class SalaEsperaAdapter(
     private var pacientes: List<Turno>
@@ -32,19 +32,26 @@ class SalaEsperaAdapter(
         return PacienteViewHolder(vista)
     }
 
+
     override fun onBindViewHolder(
         holder: PacienteViewHolder,
         position: Int
     ) {
-        val paciente = pacientes[position]
+        val turno = pacientes[position]
 
-        holder.tvNombre.text = paciente.nombrePaciente
+        val paciente = PacientesRepository.buscarPorId(
+            turno.pacienteId
+        )
+
+        holder.tvNombre.text =
+            paciente?.nombreCompleto ?: "Paciente no encontrado"
 
         holder.tvDetalles.text =
-            "DNI: ${paciente.dniPaciente}\n" +
-                    "Horario: ${paciente.horario}\n" +
-                    "Consultorio: ${paciente.consultorio}"
+            "DNI: ${paciente?.dni ?: "No disponible"}\n" +
+                    "Horario: ${turno.horario}\n" +
+                    "Consultorio: ${turno.consultorio}"
     }
+
 
     override fun getItemCount(): Int = pacientes.size
     fun actualizarLista(nuevaLista: List<Turno>) {

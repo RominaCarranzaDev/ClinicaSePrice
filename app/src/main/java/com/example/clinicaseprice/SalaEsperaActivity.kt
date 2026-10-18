@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.clinicaseprice.repository.PacientesRepository
 import com.example.clinicaseprice.repository.TurnosRepository
 
 class SalaEsperaActivity : BaseActivity() {
@@ -67,6 +68,7 @@ class SalaEsperaActivity : BaseActivity() {
         filtrarPacientes()
     }
 
+
     private fun filtrarPacientes() {
         val busqueda = edtBuscarPaciente.text
             .toString()
@@ -75,22 +77,39 @@ class SalaEsperaActivity : BaseActivity() {
 
         val busquedaDni = busqueda.filter { it.isDigit() }
 
-        val pacientesAcreditados = TurnosRepository.obtenerTodos().filter { turno ->
-            val estaAcreditado = turno.estado.equals("Acreditado", ignoreCase = true)
+        val pacientesAcreditados = TurnosRepository.obtenerTodos()
+            .filter { turno ->
 
-            val coincideNombre =
-                turno.nombrePaciente.lowercase().contains(busqueda)
+                val estaAcreditado = turno.estado.equals(
+                    "ACREDITADO",
+                    ignoreCase = true
+                )
 
-            val dniPaciente = turno.dniPaciente.filter { it.isDigit() }
+                // Obtener el paciente mediante su ID.
+                val paciente = PacientesRepository.buscarPorId(
+                    turno.pacienteId
+                )
 
-            val coincideDni =
-                busquedaDni.isNotEmpty() && dniPaciente.contains(busquedaDni)
+                val nombrePaciente =
+                    paciente?.nombreCompleto.orEmpty().lowercase()
 
-            val coincideBusqueda =
-                busqueda.isEmpty() || coincideNombre || coincideDni
+                val dniPaciente =
+                    paciente?.dni.orEmpty().filter { it.isDigit() }
 
-            estaAcreditado && coincideBusqueda
-        }
+                val coincideNombre =
+                    nombrePaciente.contains(busqueda)
+
+                val coincideDni =
+                    busquedaDni.isNotEmpty() &&
+                            dniPaciente.contains(busquedaDni)
+
+                val coincideBusqueda =
+                    busqueda.isEmpty() ||
+                            coincideNombre ||
+                            coincideDni
+
+                estaAcreditado && paciente != null && coincideBusqueda
+            }
 
         adaptador = SalaEsperaAdapter(pacientesAcreditados)
         rvSalaEspera.adapter = adaptador
@@ -107,7 +126,9 @@ class SalaEsperaActivity : BaseActivity() {
             "No se encontraron pacientes con esa búsqueda."
         }
     }
-   // Actualizá la sala de espera al volver a la pantalla
+
+
+    // Actualizá la sala de espera al volver a la pantalla
     override fun onResume() {
         super.onResume()
 
