@@ -3,8 +3,11 @@ package com.example.clinicaseprice.model
 data class Medico(
     val id: Int,
     val nombre: String,
-    val consultorioAsignado: Consultorio,
-    val horarios: Map<Int, List<FranjaHoraria>>
+    val apellido: String,
+    val matricula: String,
+    var especialidad: String,
+    var consultorioAsignado: Consultorio,
+    var horarios: Map<Int, List<FranjaHoraria>>
 )
 
 enum class Consultorio(val numero: Int) {
@@ -14,6 +17,6 @@ enum class Consultorio(val numero: Int) {
 }
 
 data class FranjaHoraria(
-    val horaInicio: Int,
-    val horaFin: Int
+    val horaInicio: String,
+    val horaFin: String
 )
