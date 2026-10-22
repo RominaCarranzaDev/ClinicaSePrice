@@ -27,7 +27,7 @@
             android:ellipsize="end"
             android:gravity="start|center_vertical"
             android:maxLines="1"
-            android:text="Sofía Valentina Martínez"
+            android:text=""
             android:textColor="#0F172A"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.1"
             android:gravity="center"
-            android:text="38.241.902"
+            android:text=""
             android:textColor="#475569"
             android:textSize="13sp" />
 
@@ -52,7 +52,7 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:text="OSDE"
+            android:text=""
             android:textColor="#475569"
             android:textSize="13sp" />
 
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.4"
             android:gravity="center"
-            android:text="name@email.com"
+            android:text=""
             android:textColor="#475569"
             android:textSize="13sp" />
 
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.4"
             android:gravity="center"
-            android:text="+54 9 11 4059-1921"
+            android:text=""
             android:textColor="#475569"
             android:textSize="13sp" />
 

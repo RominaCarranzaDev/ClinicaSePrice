@@ -36,13 +36,19 @@
             android:textSize="@dimen/text_body"
             android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spPaciente"
+        <AutoCompleteTextView
+            android:id="@+id/actvPaciente"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="24dp"
-            android:backgroundTint="#CBD5E1" />
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:hint="Buscar por DNI o nombre completo"
+            android:singleLine="true"
+            android:inputType="text"
+            android:completionThreshold="1"
+            android:dropDownHeight="wrap_content" />
 
         <!-- Especialidad -->
         <TextView

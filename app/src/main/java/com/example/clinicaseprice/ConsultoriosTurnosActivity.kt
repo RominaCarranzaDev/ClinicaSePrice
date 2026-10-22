@@ -18,7 +18,6 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.adapter.TurnoAdapter
 import com.example.clinicaseprice.model.Paciente
@@ -36,6 +35,7 @@ class ConsultoriosTurnosActivity : BaseActivity() {
     private lateinit var etBuscarTurno: EditText
     private lateinit var adaptador: TurnoAdapter
     private var paciente: Paciente? = null
+    private var turnoSeleccionado: Turno? = null
 
     // La Activity consulta los turnos desde el repositorio central.
     private fun obtenerTurnos(): List<Turno> {
@@ -69,29 +69,35 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
         rvTurnos.layoutManager = GridLayoutManager(this, 2)
 
+
         adaptador = TurnoAdapter(
             mutableListOf(),
+
             onModificar = { turno ->
                 abrirFormularioTurno(turno)
             },
+
             onCancelar = { turno ->
                 cancelarTurno(turno)
             },
+
             onAcreditar = { turno ->
                 acreditarTurno(turno)
+            },
+
+            onSeleccionar = { turno ->
+                turnoSeleccionado = turno
             }
         )
 
         rvTurnos.adapter = adaptador
 
+
         configurarFiltro()
 
         btnNuevoTurno.setOnClickListener {
-                val intent = Intent(this, SolicitarTurno::class.java)
-
-                intent.putExtra("pacienteID", paciente?.id)
-
-                startActivity(intent)
+            val intent = Intent(this, SolicitarTurnoActivity::class.java)
+            startActivity(intent)
             }
 
         filtrarTurnos()

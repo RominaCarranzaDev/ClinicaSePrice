@@ -2,7 +2,10 @@ package com.example.clinicaseprice
 
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.text.Editable
+import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.CalendarView
 import android.widget.Spinner
@@ -12,31 +15,31 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.adapter.HorarioDisponibleAdapter
+import com.example.clinicaseprice.adapter.BuscadorPacienteAdapter
 import com.example.clinicaseprice.model.Paciente
 import com.example.clinicaseprice.repository.HorarioDisponible
 import com.example.clinicaseprice.repository.MedicosRepository
 import com.example.clinicaseprice.repository.PacientesRepository
 import com.example.clinicaseprice.repository.TurnosRepository
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
-class SolicitarTurno : AppCompatActivity() {
-    private lateinit var spPaciente: Spinner
+class SolicitarTurnoActivity : AppCompatActivity() {
     private lateinit var spEspecialidad: Spinner
     private lateinit var calendarTurnos: CalendarView
     private lateinit var tvFechaSeleccionada: TextView
     private lateinit var rvHorariosDisponibles: RecyclerView
     private lateinit var btnConfirmarTurno: Button
     private lateinit var btnVolverTurnos: Button
-
-    private var fechaSeleccionada: String = ""
-    private var pacienteIdRecibido: Int = -1
-
-    private var horarioSeleccionado: HorarioDisponible? = null
-
-    private var horariosDisponibles: List<HorarioDisponible> = emptyList()
-
+    private lateinit var actvPaciente: AutoCompleteTextView
     private lateinit var pacientes: List<Paciente>
+    private lateinit var adapterPacientes: BuscadorPacienteAdapter
+
+    private var pacienteSeleccionado: Paciente? = null
+    private var fechaSeleccionada: String = ""
+    private var horarioSeleccionado: HorarioDisponible? = null
+    private var horariosDisponibles: List<HorarioDisponible> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,14 +47,16 @@ class SolicitarTurno : AppCompatActivity() {
         setContentView(R.layout.activity_solicitar_turno)
 
         vincularVistas()
-        configurarCalendario()
         cargarPacientes()
+        configurarCalendario()
         cargarEspecialidades()
         configurarEventos()
+
+        actualizarHorarios()
     }
 
     private fun vincularVistas() {
-        spPaciente = findViewById(R.id.spPaciente)
+        actvPaciente = findViewById(R.id.actvPaciente)
         spEspecialidad = findViewById(R.id.spEspecialidad)
         calendarTurnos = findViewById(R.id.calendarTurnos)
         tvFechaSeleccionada = findViewById(R.id.tvFechaSeleccionada)
@@ -73,7 +78,7 @@ class SolicitarTurno : AppCompatActivity() {
         fechaSeleccionada = SimpleDateFormat(
             "dd/MM/yyyy",
             Locale.getDefault()
-        ).format(java.util.Date())
+        ).format(Date())
 
         tvFechaSeleccionada.text =
             "Fecha seleccionada: $fechaSeleccionada"
@@ -84,44 +89,75 @@ class SolicitarTurno : AppCompatActivity() {
     private fun cargarPacientes() {
         pacientes = PacientesRepository.obtenerTodos()
 
-        val nombresPacientes = pacientes.map {
-            it.nombreCompleto
-        }
-
-        val adapter = ArrayAdapter(
+        adapterPacientes = BuscadorPacienteAdapter(
             this,
-            android.R.layout.simple_spinner_item,
-            nombresPacientes
+            pacientes
         )
 
-        adapter.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item
-        )
+        actvPaciente.setAdapter(adapterPacientes)
+        actvPaciente.threshold = 1
 
-        spPaciente.adapter = adapter
+        actvPaciente.setOnClickListener {
+            actvPaciente.showDropDown()
+        }
 
-        pacienteIdRecibido = intent.getIntExtra(
-            "pacienteID",
-            -1
-        )
+        // Capturar el paciente elegido del desplegable.
+        actvPaciente.setOnItemClickListener {
+                parent, _, position, _ ->
 
-        if (pacienteIdRecibido != -1) {
-            val posicion = pacientes.indexOfFirst {
-                it.id == pacienteIdRecibido
-            }
+            val paciente = parent.getItemAtPosition(position)
+                    as? Paciente
 
-            if (posicion >= 0) {
-                spPaciente.setSelection(posicion)
-            } else {
-                Toast.makeText(
-                    this,
-                    "No se encontró el paciente recibido.",
-                    Toast.LENGTH_LONG
-                ).show()
+            if (paciente != null) {
+                pacienteSeleccionado = paciente
+
+                actvPaciente.setText(
+                    adapterPacientes.textoPaciente(paciente),
+                    false
+                )
+
+                actualizarEstadoConfirmar()
             }
         }
-    }
 
+        // Si el usuario modifica el texto, debe volver
+        // a seleccionar una coincidencia válida.
+        actvPaciente.addTextChangedListener(
+            object : android.text.TextWatcher {
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
+                    val texto = s?.toString().orEmpty()
+
+                    val textoSeleccionado =
+                        pacienteSeleccionado?.let {
+                            adapterPacientes.textoPaciente(it)
+                        }
+
+                    if (texto != textoSeleccionado) {
+                        pacienteSeleccionado = null
+                    }
+
+                    actualizarEstadoConfirmar()
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                }
+            }
+        )
+    }
     private fun cargarEspecialidades() {
         val especialidades = MedicosRepository.obtenerTodos()
             .map { it.especialidad }
@@ -142,6 +178,7 @@ class SolicitarTurno : AppCompatActivity() {
     }
 
     private fun configurarEventos() {
+
         calendarTurnos.setOnDateChangeListener {
                 _, year, month, dayOfMonth ->
 
@@ -165,7 +202,7 @@ class SolicitarTurno : AppCompatActivity() {
 
                 override fun onItemSelected(
                     parent: android.widget.AdapterView<*>?,
-                    view: android.view.View?,
+                    view: View?,
                     position: Int,
                     id: Long
                 ) {
@@ -190,14 +227,14 @@ class SolicitarTurno : AppCompatActivity() {
 
     private fun actualizarHorarios() {
         horarioSeleccionado = null
-        btnConfirmarTurno.isEnabled = false
 
-        if (spEspecialidad.selectedItem == null) {
+        if (spEspecialidad.selectedItemPosition <= 0) {
             limpiarHorarios()
             return
         }
 
-        val especialidad = spEspecialidad.selectedItem.toString()
+        val especialidad =
+            spEspecialidad.selectedItem.toString()
 
         horariosDisponibles =
             TurnosRepository.obtenerDisponibilidadPorEspecialidad(
@@ -209,7 +246,7 @@ class SolicitarTurno : AppCompatActivity() {
             HorarioDisponibleAdapter(horariosDisponibles) { horario ->
 
                 horarioSeleccionado = horario
-                btnConfirmarTurno.isEnabled = true
+                actualizarEstadoConfirmar()
             }
 
         if (horariosDisponibles.isEmpty()) {
@@ -219,23 +256,66 @@ class SolicitarTurno : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+
+        actualizarEstadoConfirmar()
     }
 
     private fun limpiarHorarios() {
         horariosDisponibles = emptyList()
         horarioSeleccionado = null
+
         rvHorariosDisponibles.adapter =
             HorarioDisponibleAdapter(emptyList()) {}
-        btnConfirmarTurno.isEnabled = false
+
+        actualizarEstadoConfirmar()
+    }
+
+    private fun actualizarEstadoConfirmar() {
+        val pacienteValido = pacienteSeleccionado != null
+
+        val especialidadValida =
+            spEspecialidad.selectedItemPosition > 0
+
+        val horarioValido = horarioSeleccionado != null
+
+        btnConfirmarTurno.isEnabled =
+            pacienteValido &&
+                    especialidadValida &&
+                    horarioValido
     }
 
     private fun confirmarTurno() {
-        if (spPaciente.selectedItemPosition < 0 ||
-            pacientes.isEmpty()
-        ) {
+        val paciente = pacienteSeleccionado
+
+        if (paciente == null) {
             Toast.makeText(
                 this,
-                "Seleccioná un paciente.",
+                "Buscá y seleccioná un paciente existente.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        // Comprobar que el paciente siga existiendo.
+        val pacienteExistente =
+            PacientesRepository.buscarPorId(paciente.id)
+
+        if (pacienteExistente == null) {
+            pacienteSeleccionado = null
+            actualizarEstadoConfirmar()
+
+            Toast.makeText(
+                this,
+                "El paciente ya no existe en el registro.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        if (spEspecialidad.selectedItemPosition <= 0) {
+            Toast.makeText(
+                this,
+                "Seleccioná una especialidad.",
                 Toast.LENGTH_SHORT
             ).show()
             return
@@ -252,17 +332,30 @@ class SolicitarTurno : AppCompatActivity() {
             return
         }
 
-        val paciente = pacientes[spPaciente.selectedItemPosition]
-
         val agregado = TurnosRepository.agregarTurno(
-            dniPaciente = paciente.dni,
+            dniPaciente = pacienteExistente.dni,
             fecha = horario.fecha,
             horario = horario.horario,
             medicoId = horario.medico.id
         )
 
-        actualizarHorarios()
+        if (agregado != null ) {
+            Toast.makeText(
+                this,
+                "Turno solicitado correctamente.",
+                Toast.LENGTH_SHORT
+            ).show()
 
+            finish()
+        } else {
+            Toast.makeText(
+                this,
+                "No se pudo crear el turno. Verificá la disponibilidad.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            actualizarHorarios()
+        }
     }
 }
 

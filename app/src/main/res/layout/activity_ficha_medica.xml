@@ -312,7 +312,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Volver al consultorio" />
+            android:text="Volver" />
 
         <Button
             android:id="@+id/btnGuardar"

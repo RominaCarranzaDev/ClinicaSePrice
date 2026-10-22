@@ -10,15 +10,21 @@ import com.example.clinicaseprice.R
 import com.example.clinicaseprice.model.Turno
 import com.example.clinicaseprice.repository.PacientesRepository
 
+
 class TurnoAdapter(
     private val listaTurnos: MutableList<Turno>,
     private val onModificar: (Turno) -> Unit,
     private val onCancelar: (Turno) -> Unit,
-    private val onAcreditar: (Turno) -> Unit
+    private val onAcreditar: (Turno) -> Unit,
+    private val onSeleccionar: (Turno?) -> Unit
 ) : RecyclerView.Adapter<TurnoAdapter.TurnoViewHolder>() {
 
-    class TurnoViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
+    private var turnoSeleccionadoId: Int? = null
+
+    class TurnoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    {
+        val cardTurno: View =
+            itemView.findViewById(R.id.cardTurno)
 
         val tvPaciente: TextView =
             itemView.findViewById(R.id.tvPacienteTurno)
@@ -46,34 +52,61 @@ class TurnoAdapter(
         return TurnoViewHolder(vista)
     }
 
-
     override fun onBindViewHolder(
         holder: TurnoViewHolder,
         position: Int
     ) {
         val turno = listaTurnos[position]
+        val seleccionado = turnoSeleccionadoId == turno.id
 
-        val paciente = PacientesRepository.buscarPorId(
-            turno.pacienteId
-        )
+        // Apariencia de la tarjeta seleccionada
+        val densidad = holder.itemView.resources.displayMetrics.density
 
-        holder.tvPaciente.text =
-            paciente?.nombreCompleto ?: "Paciente no encontrado"
+        holder.cardTurno.elevation = (if (seleccionado) 10f else 2f) * densidad
+
+
+        // Selecciona la tarjeta
+        holder.cardTurno.setOnClickListener {
+            val posicionActual = holder.bindingAdapterPosition
+
+            if (posicionActual != RecyclerView.NO_POSITION) {
+                val turnoTocado = listaTurnos[posicionActual]
+
+                turnoSeleccionadoId =
+                    if (turnoSeleccionadoId == turnoTocado.id) {
+                        null
+                    } else {
+                        turnoTocado.id
+                    }
+
+                val turnoActual = listaTurnos.find {
+                    it.id == turnoSeleccionadoId
+                }
+
+                onSeleccionar(turnoActual)
+                notifyDataSetChanged()
+            }
+        }
+
+        // Datos del paciente
+        val paciente = PacientesRepository.buscarPorId(turno.pacienteId)
+
+        holder.tvPaciente.text = paciente?.nombreCompleto ?: "Paciente no encontrado"
 
         val tipoTurno = if (turno.esSobreturno) {
-            "SOBRETURNO"
-        } else {
-            ""
-        }
+            "\nSOBRETURNO"
+            } else {
+                ""
+            }
 
         holder.tvDetalles.text =
             "DNI: ${paciente?.dni ?: "No disponible"}\n" +
-                    "Médico: ${turno.nombreMedico}\n" +
-                    "Fecha: ${turno.fecha}\n" +
-                    "Horario: ${turno.horario}\n" +
-                    "Consultorio: ${turno.consultorio}\n" +
-                    "Estado: ${turno.estado}" +
-                    "$tipoTurno\n"
+            "Médico: ${turno.nombreMedico}\n" +
+            "Fecha: ${turno.fecha}\n" +
+            "Horario: ${turno.horario}\n" +
+            "Consultorio: ${turno.consultorio}\n" +
+            "Estado: ${turno.estado}" +
+            tipoTurno
 
         val yaAcreditado = turno.estado.equals(
             "ACREDITADO",
@@ -96,6 +129,7 @@ class TurnoAdapter(
             }
         }
 
+        // Botón Acreditar
         holder.btnAcreditar.text =
             if (yaAcreditado) {
                 "Paciente acreditado"
@@ -104,19 +138,27 @@ class TurnoAdapter(
             }
 
         holder.btnAcreditar.isEnabled = !yaAcreditado
-
         holder.btnAcreditar.setOnClickListener {
-            onAcreditar(turno)
+            if (!yaAcreditado) {
+                onAcreditar(turno)
+            }
         }
     }
 
-    override fun getItemCount(): Int {
-        return listaTurnos.size
-    }
+    override fun getItemCount(): Int = listaTurnos.size
 
     fun actualizarLista(nuevaLista: List<Turno>) {
         listaTurnos.clear()
         listaTurnos.addAll(nuevaLista)
+
+        // Si el turno seleccionado ya no está en la lista,
+        // se limpia la selección.
+        if (listaTurnos.none { it.id == turnoSeleccionadoId }) {
+            turnoSeleccionadoId = null
+            onSeleccionar(null)
+        }
+
         notifyDataSetChanged()
     }
 }
+

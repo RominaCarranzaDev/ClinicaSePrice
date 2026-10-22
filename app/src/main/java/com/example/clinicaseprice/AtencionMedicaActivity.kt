@@ -82,6 +82,11 @@ class AtencionMedicaActivity : AppCompatActivity() {
             cerrarSesion()
         }
 
+        val btnRegistrarAtencion = findViewById<Button>(R.id.btnFinalizarConsulta)
+
+        btnRegistrarAtencion.setOnClickListener {
+            //TODO
+        }
         // Data Medico
         val usuarioId = intent.getIntExtra("usuarioId", -1)
         medico = MedicosRepository.buscarPorIdUsuario(usuarioId)
