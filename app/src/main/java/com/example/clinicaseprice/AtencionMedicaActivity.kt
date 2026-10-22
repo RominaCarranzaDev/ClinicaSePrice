@@ -45,6 +45,7 @@ class AtencionMedicaActivity : AppCompatActivity() {
     private lateinit var llListadoEstudios: LinearLayout
 
     // Datos del paciente llamado
+    private var pacienteEnAtencion: Paciente? = null
     private lateinit var tvNombrePaciente: TextView
     private lateinit var tvInicialesPaciente: TextView
     private  lateinit var hcDniPaciente: TextView
@@ -53,6 +54,9 @@ class AtencionMedicaActivity : AppCompatActivity() {
     private  lateinit var telPaciente: TextView
     private  lateinit var tvGrupoyFactorSanguineo: TextView
     private lateinit var tvFactorRiesgo: TextView
+    private lateinit var etAnamnesis: EditText
+    private lateinit var etDiagnostico: EditText
+    private lateinit var etObservaciones: EditText
     private val prescripcionesActuales = mutableListOf<PrescripcionMedica>()
     private val estudiosActuales = mutableListOf<OrdenMedicaEstudio>()
 
@@ -76,6 +80,10 @@ class AtencionMedicaActivity : AppCompatActivity() {
         val especialidad = findViewById<TextView>(R.id.tvEspecialidadProfesional)
         val nroConsultorio = findViewById<TextView>(R.id.tvNroConsultorio)
 
+        etAnamnesis = findViewById<EditText>(R.id.etAnamnesis)
+        etDiagnostico= findViewById<EditText>(R.id.etDiagnostico)
+        etObservaciones = findViewById<EditText>(R.id.etObservaciones)
+
         val btnCerrarSesion = findViewById<ImageButton>(R.id.btnCerrarSesion)
 
         btnCerrarSesion.setOnClickListener {
@@ -85,7 +93,25 @@ class AtencionMedicaActivity : AppCompatActivity() {
         val btnRegistrarAtencion = findViewById<Button>(R.id.btnFinalizarConsulta)
 
         btnRegistrarAtencion.setOnClickListener {
-            //TODO
+            val anamnesis = etAnamnesis.text.toString().trim()
+            val diagnostico = etDiagnostico.text.toString().trim()
+            val observaciones = etObservaciones.text.toString().trim()
+
+            HistoriaClinicaRepository.registrarAtencion(
+                pacienteId = pacienteEnAtencion?.id,
+                medicoId = medico?.id,
+                anamnesis = anamnesis,
+                diagnostico = diagnostico,
+                observaciones = observaciones
+            )
+
+            Toast.makeText(
+                this,
+                "Atención registrada correctamente.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            limpiarCamposAtencion()
         }
         // Data Medico
         val usuarioId = intent.getIntExtra("usuarioId", -1)
@@ -233,10 +259,10 @@ class AtencionMedicaActivity : AppCompatActivity() {
             tvNombrePaciente.text = "No hay pacientes en espera"
             return
         }
-
         // Obtener el primer paciente
         val turno = pacientesEnEspera[0]
         val paciente = PacientesRepository.buscarPorId(turno.pacienteId)
+        pacienteEnAtencion = paciente
         cargarDatosPaciente(paciente)
 
         // Cambiar el estado para que no vuelva a la lista
@@ -507,6 +533,12 @@ class AtencionMedicaActivity : AppCompatActivity() {
 
         startActivity(intent)
         finish()
+    }
+
+    private fun limpiarCamposAtencion() {
+        etAnamnesis.text.clear()
+        etDiagnostico.text.clear()
+        etObservaciones.text.clear()
     }
 }
 

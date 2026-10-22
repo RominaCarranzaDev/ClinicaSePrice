@@ -65,12 +65,12 @@ object HistoriaClinicaRepository {
     }
 
     // Buscar historia clínica por paciente
-    fun buscarPorPaciente(pacienteId: Int): HistoriaClinica? {
+    fun buscarPorPaciente(pacienteId: Int?): HistoriaClinica? {
         return historias.find { it.pacienteId == pacienteId }
     }
 
     // Crear una historia clínica nueva, sin agregarla al repositorio
-    fun crear(pacienteId: Int): HistoriaClinica {
+    fun crear(pacienteId: Int?): HistoriaClinica {
         val nuevoId = (historias.maxOfOrNull { it.id } ?: 0) + 1
 
         return HistoriaClinica(
@@ -106,7 +106,7 @@ object HistoriaClinicaRepository {
     }
 
     // Crear una historia solamente si el paciente no tiene una
-    fun crearYAgregar(pacienteId: Int): HistoriaClinica? {
+    fun crearYAgregar(pacienteId: Int?): HistoriaClinica? {
         val historiaExistente = buscarPorPaciente(pacienteId)
 
         if (historiaExistente != null) {
@@ -125,8 +125,8 @@ object HistoriaClinicaRepository {
     // Registrar una atención en la historia clínica del paciente
     // Si no tiene historia, la crea automáticamente
     fun registrarAtencion(
-        pacienteId: Int,
-        medicoId: Int,
+        pacienteId: Int?,
+        medicoId: Int?,
         anamnesis: String,
         diagnostico: String,
         observaciones: String = ""

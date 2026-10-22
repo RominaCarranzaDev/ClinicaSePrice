@@ -3,7 +3,7 @@ package com.example.clinicaseprice.model
 data class HistoriaClinica(
     val id: Int,
     val numeroHistoriaClinica: String,
-    val pacienteId: Int,
+    val pacienteId: Int?,
     val fechaCreacion: String,
 
     val grupoSanguineo: GrupoSanguineo? = null,
@@ -87,7 +87,7 @@ data class PrescripcionMedica(
 data class AtencionMedica(
     val id: Int,
     val fecha: String,
-    val medicoId: Int,
+    val medicoId: Int?,
     var anamnesis: String = "",
     var diagnostico: String = "",
     var observaciones: String = "",
