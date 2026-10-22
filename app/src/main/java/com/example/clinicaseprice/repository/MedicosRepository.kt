@@ -37,7 +37,7 @@ object MedicosRepository {
 
         Medico(
             id = 1,
-            nombre = "Juan",
+            nombre = "Juana",
             apellido = "Gómez",
             matricula = "MN-12345",
             especialidad = "Clínica Médica",
@@ -46,7 +46,8 @@ object MedicosRepository {
                 lunes to listOf(franja("08:00", "12:00")),
                 miercoles to listOf(franja("08:00", "12:00")),
                 viernes to listOf(franja("08:00", "12:00"))
-            )
+            ),
+            usuarioId = 2
         ),
 
         Medico(
@@ -60,7 +61,8 @@ object MedicosRepository {
                 martes to listOf(franja("14:00", "18:00")),
                 jueves to listOf(franja("14:00", "18:00")),
                 viernes to listOf(franja("14:00", "18:00"))
-            )
+            ),
+            usuarioId = 3
         ),
 
         // TRAUMATOLOGÍA
@@ -76,7 +78,8 @@ object MedicosRepository {
                 lunes to listOf(franja("14:00", "18:00")),
                 miercoles to listOf(franja("14:00", "18:00")),
                 viernes to listOf(franja("08:00", "12:00"))
-            )
+            ),
+            usuarioId = 4
         ),
 
         Medico(
@@ -89,7 +92,8 @@ object MedicosRepository {
             horarios = mapOf(
                 martes to listOf(franja("08:00", "12:00")),
                 jueves to listOf(franja("08:00", "12:00"))
-            )
+            ),
+            usuarioId = 5
         ),
 
         // CARDIOLOGÍA
@@ -105,7 +109,8 @@ object MedicosRepository {
                 lunes to listOf(franja("08:00", "12:00")),
                 jueves to listOf(franja("08:00", "12:00")),
                 viernes to listOf(franja("14:00", "18:00"))
-            )
+            ),
+            usuarioId = 6
         ),
 
         Medico(
@@ -119,7 +124,8 @@ object MedicosRepository {
                 martes to listOf(franja("14:00", "18:00")),
                 miercoles to listOf(franja("08:00", "12:00")),
                 jueves to listOf(franja("14:00", "18:00"))
-            )
+            ),
+            usuarioId = 7
         )
     )
 
@@ -131,6 +137,11 @@ object MedicosRepository {
     // Buscar un médico por ID.
     fun buscarPorId(id: Int): Medico? {
         return medicos.find { it.id == id }
+    }
+
+    // Buscar un médico por ID de usuario.
+    fun buscarPorIdUsuario(id: Int): Medico? {
+        return medicos.find { it.usuarioId == id }
     }
 
     // Buscar médicos por especialidad.

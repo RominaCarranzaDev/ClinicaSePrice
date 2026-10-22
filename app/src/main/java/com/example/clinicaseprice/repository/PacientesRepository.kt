@@ -29,7 +29,8 @@ object PacientesRepository {
                     obraSocial = "Particular",
                     nombre = "Sofía Valentina",
                     apellido = "Martínez",
-                    numeroHistoriaClinica = "HC-001"
+                    numeroHistoriaClinica = "HC-001",
+                    fechaNacimiento = "11/10/1990"
                 ),
                 Paciente(
                     id = 2,
@@ -39,7 +40,8 @@ object PacientesRepository {
                     obraSocial = "Swiss Medical",
                     nombre = "Juan Carlos",
                     apellido = "Pérez",
-                    numeroHistoriaClinica = "HC-002"
+                    numeroHistoriaClinica = "HC-002",
+                    fechaNacimiento = "11/10/1990"
                 ),
                 Paciente(
                     id = 3,
@@ -49,7 +51,8 @@ object PacientesRepository {
                     obraSocial = "Galeno",
                     nombre = "Amelia",
                     apellido = "Ruiz",
-                    numeroHistoriaClinica = "HC-003"
+                    numeroHistoriaClinica = "HC-003",
+                    fechaNacimiento = "11/10/1990"
                 ),
                 Paciente(
                     id = 4,
@@ -59,7 +62,8 @@ object PacientesRepository {
                     obraSocial = "OSDE",
                     nombre = "Martín",
                     apellido = "González",
-                    numeroHistoriaClinica = "HC-004"
+                    numeroHistoriaClinica = "HC-004",
+                    fechaNacimiento = "11/10/1990"
                 ),
                 Paciente(
                     id = 5,
@@ -69,7 +73,8 @@ object PacientesRepository {
                     obraSocial = "PAMI",
                     nombre = "Lucía",
                     apellido = "Fernández",
-                    numeroHistoriaClinica = "HC-005"
+                    numeroHistoriaClinica = "HC-005",
+                    fechaNacimiento = "11/10/1990"
                 ),
                 Paciente(
                     id = 6,
@@ -79,7 +84,8 @@ object PacientesRepository {
                     obraSocial = "IOMA",
                     nombre = "Diego",
                     apellido = "Rodríguez",
-                    numeroHistoriaClinica = "HC-006"
+                    numeroHistoriaClinica = "HC-006",
+                    fechaNacimiento = "11/10/1990"
                 ),
                 Paciente(
                     id = 7,
@@ -89,7 +95,8 @@ object PacientesRepository {
                     obraSocial = "Swiss Medical",
                     nombre = "Valentina",
                     apellido = "López",
-                    numeroHistoriaClinica = "HC-007"
+                    numeroHistoriaClinica = "HC-007",
+                    fechaNacimiento = "11/10/1990"
                 ),
                 Paciente(
                     id = 8,
@@ -99,7 +106,8 @@ object PacientesRepository {
                     obraSocial = "Galeno",
                     nombre = "Facundo",
                     apellido = "Torres",
-                    numeroHistoriaClinica = "HC-008"
+                    numeroHistoriaClinica = "HC-008",
+                    fechaNacimiento = "11/10/1990"
                 ),
                 Paciente(
                     id = 9,
@@ -109,7 +117,8 @@ object PacientesRepository {
                     obraSocial = "OSDE",
                     nombre = "Camila",
                     apellido = "Sánchez",
-                    numeroHistoriaClinica = "HC-009"
+                    numeroHistoriaClinica = "HC-009",
+                    fechaNacimiento = "11/10/1990"
                 ),
                 Paciente(
                     id = 10,
@@ -119,7 +128,8 @@ object PacientesRepository {
                     obraSocial = "Particular",
                     nombre = "Mateo",
                     apellido = "Díaz",
-                    numeroHistoriaClinica = "HC-010"
+                    numeroHistoriaClinica = "HC-010",
+                    fechaNacimiento = "11/10/1990"
                 )
             )
         )

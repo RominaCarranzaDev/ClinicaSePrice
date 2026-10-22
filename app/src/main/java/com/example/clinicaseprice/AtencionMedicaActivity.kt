@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,41 +16,83 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.model.Turno
 import com.example.clinicaseprice.repository.TurnosRepository
 import android.widget.Toast
+import com.example.clinicaseprice.model.Medicamento
+import com.example.clinicaseprice.model.Medico
+import com.example.clinicaseprice.model.OrdenMedicaEstudio
+import com.example.clinicaseprice.model.Paciente
+import com.example.clinicaseprice.model.PrescripcionMedica
+import com.example.clinicaseprice.model.PresentacionMedicamento
+import com.example.clinicaseprice.repository.HistoriaClinicaRepository
+import com.example.clinicaseprice.repository.MedicosRepository
 import com.example.clinicaseprice.repository.PacientesRepository
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class AtencionMedicaActivity : AppCompatActivity() {
 
     // Lista de espera
     private lateinit var adapterSalaEspera: SalaEsperaAdapter
     private val pacientesEnEspera = mutableListOf<Turno>()
+    private lateinit var tvCantidadPacientes: TextView
+    private var medico: Medico? = null
+
 
     // Búsqueda de medicamentos y estudios
     private lateinit var etBuscarMedicamento: AutoCompleteTextView
     private lateinit var etBuscarEstudio: AutoCompleteTextView
+    private lateinit var llListadoPrescripciones: LinearLayout
+    private lateinit var llListadoEstudios: LinearLayout
 
     // Datos del paciente llamado
     private lateinit var tvNombrePaciente: TextView
     private lateinit var tvInicialesPaciente: TextView
-
-
-    private lateinit var tvCantidadPacientes: TextView
+    private  lateinit var hcDniPaciente: TextView
+    private  lateinit var fechaNacEdad: TextView
+    private  lateinit var emailPaciente: TextView
+    private  lateinit var telPaciente: TextView
+    private  lateinit var tvGrupoyFactorSanguineo: TextView
+    private lateinit var tvFactorRiesgo: TextView
+    private val prescripcionesActuales = mutableListOf<PrescripcionMedica>()
+    private val estudiosActuales = mutableListOf<OrdenMedicaEstudio>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_atencion_medica)
+
+        // Datos del paciente
+        tvNombrePaciente = findViewById(R.id.tvNombrePaciente)
+        tvInicialesPaciente = findViewById(R.id.tvInicialesPaciente)
+        hcDniPaciente = findViewById(R.id.tvHCyDNIPaciente)
+        fechaNacEdad = findViewById(R.id.tvFechaNacyEdadPaciente)
+        emailPaciente = findViewById(R.id.tvEmailPaciente)
+        telPaciente = findViewById(R.id.tvTelPaciente)
+
+        // Historia clínica
+        tvGrupoyFactorSanguineo = findViewById(R.id.tvGrupoyFactorSanguineo)
+        tvFactorRiesgo = findViewById(R.id.tvFactorRiesgo)
+
+        val nombreMedico = findViewById<TextView>(R.id.tvNombreProfesional)
+        val especialidad = findViewById<TextView>(R.id.tvEspecialidadProfesional)
+        val nroConsultorio = findViewById<TextView>(R.id.tvNroConsultorio)
 
         val btnCerrarSesion = findViewById<ImageButton>(R.id.btnCerrarSesion)
 
         btnCerrarSesion.setOnClickListener {
             cerrarSesion()
         }
-        // Inicializar vistas
-        tvNombrePaciente = findViewById(R.id.tvNombrePaciente)
-        tvInicialesPaciente = findViewById(R.id.tvInicialesPaciente)
 
+        // Data Medico
+        val usuarioId = intent.getIntExtra("usuarioId", -1)
+        medico = MedicosRepository.buscarPorIdUsuario(usuarioId)
+
+        nombreMedico.text = "${medico?.nombre} ${medico?.apellido}"
+        especialidad.text = "${medico?.especialidad}"
+        nroConsultorio.text = " CONSULTORIO N ${medico?.consultorioAsignado?.numero}"
+
+        // Configurar Sala de espera
         tvCantidadPacientes = findViewById(R.id.tvCantidadPacientesEnEspera)
 
-        // Configurar lista de espera
         val rvSalaEspera = findViewById<RecyclerView>(R.id.rvListadoSalaEspera)
 
         rvSalaEspera.layoutManager = LinearLayoutManager(this)
@@ -66,22 +110,15 @@ class AtencionMedicaActivity : AppCompatActivity() {
             llamarSiguientePaciente()
         }
 
-        // Configurar búsqueda de medicamentos
-        etBuscarMedicamento =
-            findViewById(R.id.etBuscarMedicamento)
+        // Buscar medicamentos
+        etBuscarMedicamento = findViewById(R.id.etBuscarMedicamento)
 
-        val principiosActivos = listOf(
-            "Paracetamol",
-            "Pantoprazol",
-            "Ibuprofeno",
-            "Amoxicilina",
-            "Azitromicina"
-        )
+        val nombresMedicamentos = Medicamento.values().map { it.nombre }
 
         val adapterMedicamentos = ArrayAdapter(
             this,
             android.R.layout.simple_dropdown_item_1line,
-            principiosActivos
+            nombresMedicamentos
         )
 
         etBuscarMedicamento.setAdapter(adapterMedicamentos)
@@ -90,23 +127,30 @@ class AtencionMedicaActivity : AppCompatActivity() {
             etBuscarMedicamento.showDropDown()
         }
 
-        // Configurar búsqueda de estudios
-        etBuscarEstudio =
-            findViewById(R.id.etBuscarEstudio)
+        etBuscarMedicamento.setOnItemClickListener {
+                _, _, position, _ ->
 
-        val estudios = listOf(
-            "Hemograma completo",
-            "Glucemia",
-            "Colesterol total",
-            "Orina completa",
-            "Electrocardiograma",
-            "Radiografía de tórax"
-        )
+            val nombre = adapterMedicamentos.getItem(position)
+                ?: return@setOnItemClickListener
+
+            val medicamento = Medicamento.values()
+                .find { it.nombre == nombre }
+                ?: return@setOnItemClickListener
+
+            mostrarDialogoPrescripcion(medicamento)
+
+            etBuscarMedicamento.text.clear()
+        }
+
+        // Buscar estudios
+        etBuscarEstudio = findViewById(R.id.etBuscarEstudio)
+
+        val nombresEstudios = OrdenMedicaEstudio.values().map { it.descripcion }
 
         val adapterEstudios = ArrayAdapter(
             this,
             android.R.layout.simple_dropdown_item_1line,
-            estudios
+            nombresEstudios
         )
 
         etBuscarEstudio.setAdapter(adapterEstudios)
@@ -115,49 +159,33 @@ class AtencionMedicaActivity : AppCompatActivity() {
             etBuscarEstudio.showDropDown()
         }
 
-
-        val llListadoPrescripciones =
-            findViewById<LinearLayout>(
-                R.id.llListadoPrescripciones
-            )
-
-        val llListadoEstudios =
-            findViewById<LinearLayout>(
-                R.id.llListadoEstudios
-            )
-
-        etBuscarMedicamento.setOnItemClickListener {
-                _, _, position, _ ->
-
-            val medicamento = adapterMedicamentos
-                .getItem(position)
-                .toString()
-
-            agregarTarjeta(
-                contenedor = llListadoPrescripciones,
-                texto = medicamento
-            )
-
-            etBuscarMedicamento.text.clear()
-        }
-
-        // Agregar estudio al seleccionarlo
         etBuscarEstudio.setOnItemClickListener {
                 _, _, position, _ ->
 
-            val estudio = adapterEstudios
-                .getItem(position)
-                .toString()
+            val descripcion = adapterEstudios.getItem(position)
+                ?: return@setOnItemClickListener
 
-            agregarTarjeta(
-                contenedor = llListadoEstudios,
-                texto = estudio,
-                esEstudio = true
-            )
+            val estudio = OrdenMedicaEstudio.values()
+                .find { it.descripcion == descripcion }
+                ?: return@setOnItemClickListener
+
+            if (estudio !in estudiosActuales) {
+                estudiosActuales.add(estudio)
+
+                agregarTarjeta(
+                    contenedor = llListadoEstudios,
+                    texto = estudio.descripcion,
+                    esEstudio = true
+                )
+            }
 
             etBuscarEstudio.text.clear()
         }
-    }
+        // Contenedores
+        llListadoPrescripciones = findViewById(R.id.llListadoPrescripciones)
+
+        llListadoEstudios = findViewById(R.id.llListadoEstudios)
+        }
 
     override fun onResume() {
         super.onResume()
@@ -166,52 +194,51 @@ class AtencionMedicaActivity : AppCompatActivity() {
 
     // Cargar los turnos acreditados en la lista de espera
     private fun cargarSalaEspera() {
-
+        // Limpia el listado para cargarlo actualizado
         pacientesEnEspera.clear()
 
         pacientesEnEspera.addAll(
             TurnosRepository.obtenerTodos().filter { turno ->
-                turno.estado.equals("Acreditado", ignoreCase = true)
+                turno.estado.equals("Acreditado", ignoreCase = true) &&
+                        turno.consultorio == medico?.consultorioAsignado?.numero.toString()
             }
         )
-
+        // Mantiene actualizado el listado
         adapterSalaEspera.actualizarLista(pacientesEnEspera)
-
+        // Contador de pacientes en espera
         actualizarCantidadPacientes()
     }
 
-    // Llamar al primer paciente de la lista
+    // Actualizar el contador de pacientes en espera
+    private fun actualizarCantidadPacientes() {
+
+        val cantidad = pacientesEnEspera.size
+
+        tvCantidadPacientes.text = if (cantidad == 0) {
+            "No hay paciente en espera"
+        } else {
+            "$cantidad pacientes en espera"
+        }
+    }
+
+    // Llama al primer paciente de la lista para ser atendido
     private fun llamarSiguientePaciente() {
 
         if (pacientesEnEspera.isEmpty()) {
             tvNombrePaciente.text = "No hay pacientes en espera"
-            tvInicialesPaciente.text = "--"
             return
         }
 
         // Obtener el primer paciente
         val turno = pacientesEnEspera[0]
-
-        // Mostrar el nombre completo
         val paciente = PacientesRepository.buscarPorId(turno.pacienteId)
-        tvNombrePaciente.text = paciente?.nombreCompleto ?: "Paciente no encontrado"
-
-        // Calcular las iniciales
-        val iniciales = paciente?.nombreCompleto
-            ?.trim()
-            ?.split(Regex("\\s+"))
-            ?.mapNotNull { it.firstOrNull()?.uppercase() }
-            ?.joinToString("")
-            ?: "?"
-
-        tvInicialesPaciente.text = iniciales
+        cargarDatosPaciente(paciente)
 
         // Cambiar el estado para que no vuelva a la lista
         val actualizado = TurnosRepository.actualizarEstado(
             id = turno.id,
             nuevoEstado = "En atención"
         )
-
         if (!actualizado) {
             Toast.makeText(
                 this,
@@ -220,20 +247,64 @@ class AtencionMedicaActivity : AppCompatActivity() {
             ).show()
             return
         }
+
+        cargarHistoriaClinica(turno.pacienteId)
+
         // Quitar el paciente de la lista de espera
         cargarSalaEspera()
     }
 
-    // Actualizar el contador de pacientes en espera
-    private fun actualizarCantidadPacientes() {
-
-        val cantidad = pacientesEnEspera.size
-
-        tvCantidadPacientes.text = if (cantidad == 1) {
-            "1 paciente en espera"
-        } else {
-            "$cantidad pacientes en espera"
+    private fun cargarDatosPaciente(paciente: Paciente?) {
+        if (paciente == null) {
+            tvNombrePaciente.text = "PACIENTE NO ENCONTRADO"
+            return
         }
+
+        // Nombre completo
+        tvNombrePaciente.text = paciente.nombreCompleto
+
+        // Iniciales
+        val iniciales = paciente.nombreCompleto
+            .trim()
+            .split(Regex("\\s+"))
+            .mapNotNull { it.firstOrNull()?.uppercase() }
+            .joinToString("")
+
+        tvInicialesPaciente.text = iniciales
+
+        // Otros datos del paciente
+        hcDniPaciente.text = "${paciente.numeroHistoriaClinica}  ●  DNI ${paciente.dni.toString()}"
+        fechaNacEdad.text = "${paciente.fechaNacimiento.toString()}  ●  ${calcularEdad(paciente.fechaNacimiento)} años"
+        emailPaciente.text = "${paciente.email}"
+        telPaciente.text = "${paciente.telefono}"
+    }
+    private fun cargarHistoriaClinica(pacienteId: Int) {
+
+        // Limpiar los datos del paciente anterior
+        llListadoPrescripciones.removeAllViews()
+        llListadoEstudios.removeAllViews()
+
+        val historia = HistoriaClinicaRepository.buscarPorPaciente(pacienteId)
+
+        if (historia == null) {
+            tvGrupoyFactorSanguineo.text = "GRUPO SANGUINEO\n\nSin datos"
+            tvFactorRiesgo.text = "⚠ FACTORES DE RIESGO\n\nSin datos"
+
+            return
+        }
+
+        // Grupo sanguíneo y factor Rh
+        tvGrupoyFactorSanguineo.text = "GRUPO SANGUINEO:\n\n${historia.grupoSanguineo?.descripcion}"
+
+        tvFactorRiesgo.text =
+            if (historia.factoresRiesgo.isEmpty()) {
+                "⚠ FACTORES DE RIESGO\n\nSin factores de riesgo registrados"
+            } else {
+                "⚠ FACTORES DE RIESGO\n\n" +
+                        historia.factoresRiesgo.joinToString("\n") {
+                            "• ${it.descripcion}"
+                        }
+            }
     }
 
     // Crear una tarjeta para un medicamento o estudio
@@ -257,7 +328,7 @@ class AtencionMedicaActivity : AppCompatActivity() {
             text = if (esEstudio) {
                 "● $texto"
             } else {
-                "$texto\n\nPosología: pendiente de completar."
+                "$texto\n"
             }
 
             setPadding(
@@ -279,6 +350,148 @@ class AtencionMedicaActivity : AppCompatActivity() {
         }
 
         contenedor.addView(tarjeta)
+    }
+
+    private fun mostrarDialogoPrescripcion(
+        medicamento: Medicamento
+    ) {
+        val contenedor = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(48, 8, 48, 0)
+        }
+
+        val tvMedicamento = TextView(this).apply {
+            text = "Medicamento: ${medicamento.nombre}"
+            textSize = 18f
+        }
+
+        val tvPresentacion = TextView(this).apply {
+            text = "Presentación"
+        }
+
+        val spinnerPresentacion = Spinner(this)
+
+        val presentaciones = PresentacionMedicamento.values()
+
+        val adapterPresentaciones = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            presentaciones.map { it.descripcion }
+        ).apply {
+            setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+            )
+        }
+
+        spinnerPresentacion.adapter = adapterPresentaciones
+
+        val etPosologia = EditText(this).apply {
+            hint = "Posología (ej.: según indicación médica)"
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                    android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            minLines = 2
+        }
+
+        val etDuracion = EditText(this).apply {
+            hint = "Duración del tratamiento"
+        }
+
+        val etIndicaciones = EditText(this).apply {
+            hint = "Indicaciones adicionales (opcional)"
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                    android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            minLines = 2
+        }
+
+        contenedor.addView(tvMedicamento)
+        contenedor.addView(tvPresentacion)
+        contenedor.addView(spinnerPresentacion)
+        contenedor.addView(etPosologia)
+        contenedor.addView(etDuracion)
+        contenedor.addView(etIndicaciones)
+
+        val dialogo = androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Nueva prescripción")
+            .setView(contenedor)
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Agregar", null)
+            .create()
+
+        dialogo.setOnShowListener {
+            dialogo.getButton(
+                androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE
+            ).setOnClickListener {
+
+                val posologia = etPosologia.text.toString().trim()
+                val duracion = etDuracion.text.toString().trim()
+                val indicaciones = etIndicaciones.text.toString().trim()
+
+                if (posologia.isBlank() || duracion.isBlank()) {
+                    Toast.makeText(
+                        this,
+                        "Completá la posología y la duración.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+
+                val presentacion =
+                    presentaciones[spinnerPresentacion.selectedItemPosition]
+
+                val prescripcion = PrescripcionMedica(
+                    medicamento = medicamento,
+                    presentacion = presentacion,
+                    posologia = posologia,
+                    duracion = duracion,
+                    indicaciones = indicaciones
+                )
+
+                prescripcionesActuales.add(prescripcion)
+
+                val detalle = buildString {
+                    appendLine(prescripcion.medicamento.nombre)
+                    appendLine("Presentación: ${prescripcion.presentacion.descripcion}")
+                    appendLine("Posología: ${prescripcion.posologia}")
+                    appendLine("Duración: ${prescripcion.duracion}")
+
+                    if (prescripcion.indicaciones.isNotBlank()) {
+                        append("Indicaciones: ${prescripcion.indicaciones}")
+                    }
+                }.trim()
+
+                agregarTarjeta(
+                    contenedor = llListadoPrescripciones,
+                    texto = detalle
+                )
+
+                dialogo.dismiss()
+            }
+        }
+
+        dialogo.show()
+    }
+
+    //Calcula la edad segun la fecha de nacimiento
+    private fun calcularEdad(fechaNacimiento: String): Int {
+        val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        formato.isLenient = false
+
+        val fecha = formato.parse(fechaNacimiento) ?: return 0
+
+        val nacimiento = Calendar.getInstance().apply { time = fecha }
+
+        val hoy = Calendar.getInstance()
+
+        var edad = hoy.get(Calendar.YEAR) - nacimiento.get(Calendar.YEAR)
+
+        val aunNoCumplio =
+            hoy.get(Calendar.MONTH) < nacimiento.get(Calendar.MONTH) || (hoy.get(Calendar.MONTH) == nacimiento.get(Calendar.MONTH) && hoy.get(Calendar.DAY_OF_MONTH) < nacimiento.get(Calendar.DAY_OF_MONTH))
+
+        if (aunNoCumplio) {
+            edad--
+        }
+
+        return edad
     }
 
     private fun cerrarSesion() {

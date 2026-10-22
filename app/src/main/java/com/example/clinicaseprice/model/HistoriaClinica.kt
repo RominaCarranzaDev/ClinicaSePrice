@@ -8,14 +8,9 @@ data class HistoriaClinica(
 
     val grupoSanguineo: GrupoSanguineo? = null,
     val factoresRiesgo: MutableSet<FactorRiesgo> = mutableSetOf(),
-    val signosVitales: MutableList<SignoVital> = mutableListOf(),
-
     val observacionesGenerales: String = "",
-    val prescripciones: MutableList<PrescripcionMedica> = mutableListOf(),
-    val ordenesMedicas: MutableList<OrdenMedicaEstudio> = mutableListOf(),
 
-    var anamnesis: String = "",
-    var diagnostico: String = ""
+    val atenciones: MutableList<AtencionMedica> = mutableListOf()
 )
 
 enum class GrupoSanguineo(val descripcion: String) {
@@ -87,4 +82,16 @@ data class PrescripcionMedica(
     val posologia: String = "Cada 6 hs.",
     val duracion: String = "Durante 7 días",
     val indicaciones: String = ""
+)
+
+data class AtencionMedica(
+    val id: Int,
+    val fecha: String,
+    val medicoId: Int,
+    var anamnesis: String = "",
+    var diagnostico: String = "",
+    var observaciones: String = "",
+    val signosVitales: MutableList<SignoVital> = mutableListOf(),
+    val prescripciones: MutableList<PrescripcionMedica> = mutableListOf(),
+    val ordenesMedicas: MutableList<OrdenMedicaEstudio> = mutableListOf()
 )

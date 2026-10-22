@@ -459,11 +459,9 @@ object TurnosRepository {
                             turnoActivo(it)
                 }
 
-                val normalExistente =
-                    turnosDelHorario.any { !it.esSobreturno }
+                val normalExistente = turnosDelHorario.any { !it.esSobreturno }
 
-                val sobreturnoExistente =
-                    turnosDelHorario.any { it.esSobreturno }
+                val sobreturnoExistente = turnosDelHorario.any { it.esSobreturno }
 
                 val consultorioLibre = consultorioDisponible(
                     medico = medico,

@@ -7,7 +7,8 @@ data class Medico(
     val matricula: String,
     var especialidad: String,
     var consultorioAsignado: Consultorio,
-    var horarios: Map<Int, List<FranjaHoraria>>
+    var horarios: Map<Int, List<FranjaHoraria>>,
+    var usuarioId: Int
 )
 
 enum class Consultorio(val numero: Int) {

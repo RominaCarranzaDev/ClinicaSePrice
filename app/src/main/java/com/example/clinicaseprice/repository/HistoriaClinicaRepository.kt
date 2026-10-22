@@ -1,9 +1,9 @@
 package com.example.clinicaseprice.repository
 
-import com.example.clinicaseprice.model.HistoriaClinica
-import com.example.clinicaseprice.model.GrupoSanguineo
+import com.example.clinicaseprice.model.AtencionMedica
 import com.example.clinicaseprice.model.FactorRiesgo
-import com.example.clinicaseprice.model.SignoVital
+import com.example.clinicaseprice.model.GrupoSanguineo
+import com.example.clinicaseprice.model.HistoriaClinica
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -11,6 +11,7 @@ import java.util.Locale
 object HistoriaClinicaRepository {
     private val historias = mutableListOf<HistoriaClinica>()
 
+    // historias clínicas iniciales
     init {
         repeat(10) { indice ->
             val numero = indice + 1
@@ -22,46 +23,53 @@ object HistoriaClinicaRepository {
                         "HC-${numero.toString().padStart(4, '0')}",
                     pacienteId = numero,
                     fechaCreacion = fechaActual(),
+
                     grupoSanguineo =
                         GrupoSanguineo.values()[
                             indice % GrupoSanguineo.values().size
                         ],
+
                     factoresRiesgo = mutableSetOf(
                         FactorRiesgo.values()[
                             indice % FactorRiesgo.values().size
                         ]
                     ),
-                    signosVitales = mutableListOf(
-                        SignoVital.PRESION_ARTERIAL,
-                        SignoVital.FRECUENCIA_CARDIACA
-                    ),
+
                     observacionesGenerales =
                         "Historia clínica de ejemplo",
-                    anamnesis = "Anamnesis de ejemplo $numero",
-                    diagnostico = "Diagnóstico de ejemplo $numero"
+
+                    atenciones = mutableListOf(
+                        AtencionMedica(
+                            id = 1,
+                            fecha = fechaActual(),
+                            medicoId = 1,
+                            anamnesis = "Anamnesis de ejemplo $numero",
+                            diagnostico = "Diagnóstico de ejemplo $numero"
+                        )
+                    )
                 )
             )
         }
     }
 
-    // Buscar por ID
+    // Buscar historia clínica por ID
     fun buscarPorId(id: Int): HistoriaClinica? {
         return historias.find { it.id == id }
     }
 
-    // Buscar por número de historia clínica
-    fun buscarPorNumero(numero: String): HistoriaClinica? {
+    // Buscar historia clínica por número
+    fun buscarPorNroHC(numero: String): HistoriaClinica? {
         return historias.find {
-            it.numeroHistoriaClinica.equals(numero, ignoreCase = true)
+            it.numeroHistoriaClinica.equals(numero.trim(), ignoreCase = true)
         }
     }
 
-    // Buscar por paciente
+    // Buscar historia clínica por paciente
     fun buscarPorPaciente(pacienteId: Int): HistoriaClinica? {
         return historias.find { it.pacienteId == pacienteId }
     }
 
-    // Crear una historia nueva
+    // Crear una historia clínica nueva, sin agregarla al repositorio
     fun crear(pacienteId: Int): HistoriaClinica {
         val nuevoId = (historias.maxOfOrNull { it.id } ?: 0) + 1
 
@@ -74,12 +82,17 @@ object HistoriaClinicaRepository {
         )
     }
 
-    // Agregar una historia existente
+    // Agregar una historia clínica existente
     fun agregar(historia: HistoriaClinica): Boolean {
         val idExiste = historias.any { it.id == historia.id }
+
         val numeroExiste = historias.any {
-            it.numeroHistoriaClinica == historia.numeroHistoriaClinica
+            it.numeroHistoriaClinica.equals(
+                historia.numeroHistoriaClinica,
+                ignoreCase = true
+            )
         }
+
         val pacienteExiste = historias.any {
             it.pacienteId == historia.pacienteId
         }
@@ -92,15 +105,63 @@ object HistoriaClinicaRepository {
         return true
     }
 
-    // Crear y agregar en una sola operación
+    // Crear una historia solamente si el paciente no tiene una
     fun crearYAgregar(pacienteId: Int): HistoriaClinica? {
-        if (buscarPorPaciente(pacienteId) != null) {
-            return null
+        val historiaExistente = buscarPorPaciente(pacienteId)
+
+        if (historiaExistente != null) {
+            return historiaExistente
         }
 
-        val historia = crear(pacienteId)
+        val nuevaHistoria = crear(pacienteId)
 
-        return if (agregar(historia)) historia else null
+        return if (agregar(nuevaHistoria)) {
+            nuevaHistoria
+        } else {
+            buscarPorPaciente(pacienteId)
+        }
+    }
+
+    // Registrar una atención en la historia clínica del paciente
+    // Si no tiene historia, la crea automáticamente
+    fun registrarAtencion(
+        pacienteId: Int,
+        medicoId: Int,
+        anamnesis: String,
+        diagnostico: String,
+        observaciones: String = ""
+    ): AtencionMedica {
+
+        val historia = buscarPorPaciente(pacienteId)
+            ?: crearYAgregar(pacienteId)
+            ?: throw IllegalStateException(
+                "No se pudo crear la historia clínica del paciente"
+            )
+
+        val nuevoId = (historia.atenciones.maxOfOrNull { it.id } ?: 0) + 1
+
+        val atencion = AtencionMedica(
+            id = nuevoId,
+            fecha = fechaActual(),
+            medicoId = medicoId,
+            anamnesis = anamnesis,
+            diagnostico = diagnostico,
+            observaciones = observaciones
+        )
+
+        historia.atenciones.add(atencion)
+
+        return atencion
+    }
+
+    // Obtener todas las atenciones de la HC de un paciente
+    fun obtenerAtencionesPorPaciente(
+        pacienteId: Int
+    ): List<AtencionMedica> {
+        return buscarPorPaciente(pacienteId)
+            ?.atenciones
+            ?.toList()
+            ?: emptyList()
     }
 
     private fun fechaActual(): String {

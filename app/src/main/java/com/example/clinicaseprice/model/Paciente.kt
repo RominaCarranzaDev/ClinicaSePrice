@@ -5,18 +5,17 @@ data class Paciente(
     var nombreCompleto: String,
     var dni: String,
     var telefono: String,
+    var nombre: String,
+    var apellido: String,
+    var fechaNacimiento: String,
 
     // Datos opcionales
     var obraSocial: String = "",
-    var nombre: String = "",
-    var apellido: String = "",
-    var fechaNacimiento: String = "",
     var domicilio: String = "",
     var email: String = "",
     var numeroObraSocial: String = "",
     var isSelected : Boolean = false,
     var numeroHistoriaClinica: String = "",
-
 
     // Historial de turnos
     var turnos: MutableList<Turno> = mutableListOf()
