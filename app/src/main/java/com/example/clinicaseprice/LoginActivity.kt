@@ -7,8 +7,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.example.clinicaseprice.model.Usuario
-
+import com.example.clinicaseprice.repository.UsuarioRepository
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
 
             // Validación de los campos requeridos
             if (usuarioEscrito.isEmpty() || claveEscrita.isEmpty()) {
-
                 Toast.makeText(
                     this,
                     "Por favor, completa usuario y contraseña",
@@ -35,22 +33,23 @@ class LoginActivity : AppCompatActivity() {
 
             } else {
                 // Validación existencia de usuario
-                val usuarioEncontrado = usuarios.find {
-                    it.nombreUsuario == usuarioEscrito &&
-                            it.clave == claveEscrita
-                }
+                val usuarioEncontrado = UsuarioRepository.buscarPorCredenciales(
+                    usuarioEscrito,
+                    claveEscrita
+                )
                 // Autenticación
                 if (usuarioEncontrado != null) {
                     // Control del nivel de acceso. Autorización
                     when (usuarioEncontrado.rol) {
 
-                        "admin" -> {
+                        "administrador" -> {
                             val intent = Intent(this, MenuActivity::class.java)
                             startActivity(intent)
                         }
 
                         "medico" -> {
                             val intent = Intent(this, AtencionMedicaActivity::class.java)
+                            intent.putExtra("usuarioId", usuarioEncontrado.id)
                             startActivity(intent)
                         }
 
@@ -73,11 +72,4 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-
-    // Lista de usuarios iniciales con distintos roles
-    private val usuarios = listOf(
-        Usuario(1,"admin", "123456", "admin"),
-        Usuario(2,"medico", "1234", "medico"),
-        Usuario(3,"tecnico", "1234", "tecnico")
-    )
 }
