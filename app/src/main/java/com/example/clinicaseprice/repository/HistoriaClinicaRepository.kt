@@ -4,6 +4,9 @@ import com.example.clinicaseprice.model.AtencionMedica
 import com.example.clinicaseprice.model.FactorRiesgo
 import com.example.clinicaseprice.model.GrupoSanguineo
 import com.example.clinicaseprice.model.HistoriaClinica
+import com.example.clinicaseprice.model.OrdenMedicaEstudio
+import com.example.clinicaseprice.model.PrescripcionMedica
+import com.example.clinicaseprice.model.SignosVitales
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -129,7 +132,10 @@ object HistoriaClinicaRepository {
         medicoId: Int?,
         anamnesis: String,
         diagnostico: String,
-        observaciones: String = ""
+        observaciones: String = "",
+        signosVitales: SignosVitales? = null,
+        prescripciones: List<PrescripcionMedica> = emptyList(),
+        estudios: List<OrdenMedicaEstudio> = emptyList()
     ): AtencionMedica {
 
         val historia = buscarPorPaciente(pacienteId)
@@ -146,9 +152,12 @@ object HistoriaClinicaRepository {
             medicoId = medicoId,
             anamnesis = anamnesis,
             diagnostico = diagnostico,
-            observaciones = observaciones
+            observaciones = observaciones,
+            signosVitales = signosVitales,
+            factoresRiesgo = historia.factoresRiesgo.toSet(),
+            prescripciones = prescripciones.toList(),
+            estudios = estudios.toList()
         )
-
         historia.atenciones.add(atencion)
 
         return atencion

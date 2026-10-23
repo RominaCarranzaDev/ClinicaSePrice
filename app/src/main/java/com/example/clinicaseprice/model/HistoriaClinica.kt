@@ -88,10 +88,19 @@ data class AtencionMedica(
     val id: Int,
     val fecha: String,
     val medicoId: Int?,
-    var anamnesis: String = "",
-    var diagnostico: String = "",
-    var observaciones: String = "",
-    val signosVitales: MutableList<SignoVital> = mutableListOf(),
-    val prescripciones: MutableList<PrescripcionMedica> = mutableListOf(),
-    val ordenesMedicas: MutableList<OrdenMedicaEstudio> = mutableListOf()
+    val anamnesis: String,
+    val diagnostico: String,
+    val observaciones: String = "",
+
+    val signosVitales: SignosVitales? = null,
+    val factoresRiesgo: Set<FactorRiesgo> = emptySet(),
+    val prescripciones: List<PrescripcionMedica> = emptyList(),
+    val estudios: List<OrdenMedicaEstudio> = emptyList()
+)
+
+data class SignosVitales(
+    val presionArterial: String = "",
+    val frecuenciaCardiaca: String = "",
+    val temperatura: String = "",
+    val saturacionOxigeno: String = ""
 )

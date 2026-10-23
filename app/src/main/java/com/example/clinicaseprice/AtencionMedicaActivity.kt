@@ -22,6 +22,7 @@ import com.example.clinicaseprice.model.OrdenMedicaEstudio
 import com.example.clinicaseprice.model.Paciente
 import com.example.clinicaseprice.model.PrescripcionMedica
 import com.example.clinicaseprice.model.PresentacionMedicamento
+import com.example.clinicaseprice.model.SignosVitales
 import com.example.clinicaseprice.repository.HistoriaClinicaRepository
 import com.example.clinicaseprice.repository.MedicosRepository
 import com.example.clinicaseprice.repository.PacientesRepository
@@ -76,13 +77,17 @@ class AtencionMedicaActivity : AppCompatActivity() {
         tvGrupoyFactorSanguineo = findViewById(R.id.tvGrupoyFactorSanguineo)
         tvFactorRiesgo = findViewById(R.id.tvFactorRiesgo)
 
+        etAnamnesis = findViewById(R.id.etAnamnesis)
+        etDiagnostico= findViewById(R.id.etDiagnostico)
+        etObservaciones = findViewById(R.id.etObservaciones)
+
+        // Contenedores
+        llListadoPrescripciones = findViewById(R.id.llListadoPrescripciones)
+        llListadoEstudios = findViewById(R.id.llListadoEstudios)
+
         val nombreMedico = findViewById<TextView>(R.id.tvNombreProfesional)
         val especialidad = findViewById<TextView>(R.id.tvEspecialidadProfesional)
         val nroConsultorio = findViewById<TextView>(R.id.tvNroConsultorio)
-
-        etAnamnesis = findViewById<EditText>(R.id.etAnamnesis)
-        etDiagnostico= findViewById<EditText>(R.id.etDiagnostico)
-        etObservaciones = findViewById<EditText>(R.id.etObservaciones)
 
         val btnCerrarSesion = findViewById<ImageButton>(R.id.btnCerrarSesion)
 
@@ -90,6 +95,15 @@ class AtencionMedicaActivity : AppCompatActivity() {
             cerrarSesion()
         }
 
+        // Data Medico
+        val usuarioId = intent.getIntExtra("usuarioId", -1)
+        medico = MedicosRepository.buscarPorIdUsuario(usuarioId)
+
+        nombreMedico.text = "${medico?.nombre} ${medico?.apellido}"
+        especialidad.text = "${medico?.especialidad}"
+        nroConsultorio.text = " CONSULTORIO N ${medico?.consultorioAsignado?.numero}"
+
+        // Registrar la atencion en la Historia Clinica
         val btnRegistrarAtencion = findViewById<Button>(R.id.btnFinalizarConsulta)
 
         btnRegistrarAtencion.setOnClickListener {
@@ -97,12 +111,28 @@ class AtencionMedicaActivity : AppCompatActivity() {
             val diagnostico = etDiagnostico.text.toString().trim()
             val observaciones = etObservaciones.text.toString().trim()
 
+            val presionMax = findViewById<EditText>(R.id.etPresionArterialMax)
+            val presionMin = findViewById<EditText>(R.id.etPresionArterialMin)
+            val etFrecuenciaCardiaca = findViewById<EditText>(R.id.etFrecuenciaCardiaca)
+            val etTemperatura = findViewById<EditText>(R.id.etTemperatura)
+            val etSaturacionOxigeno = findViewById<EditText>(R.id.etSaturacionOxigeno)
+
+            val signosVitalesActuales = SignosVitales(
+                presionArterial ="${presionMax.text.toString().trim()} - ${presionMin.text.toString().trim()}",
+                frecuenciaCardiaca = etFrecuenciaCardiaca.text.toString().trim(),
+                temperatura = etTemperatura.text.toString().trim(),
+                saturacionOxigeno = etSaturacionOxigeno.text.toString().trim()
+            )
+
             HistoriaClinicaRepository.registrarAtencion(
                 pacienteId = pacienteEnAtencion?.id,
                 medicoId = medico?.id,
                 anamnesis = anamnesis,
                 diagnostico = diagnostico,
-                observaciones = observaciones
+                observaciones = observaciones,
+                signosVitales = signosVitalesActuales,
+                prescripciones = prescripcionesActuales.toList(),
+                estudios = estudiosActuales.toList()
             )
 
             Toast.makeText(
@@ -113,13 +143,6 @@ class AtencionMedicaActivity : AppCompatActivity() {
 
             limpiarCamposAtencion()
         }
-        // Data Medico
-        val usuarioId = intent.getIntExtra("usuarioId", -1)
-        medico = MedicosRepository.buscarPorIdUsuario(usuarioId)
-
-        nombreMedico.text = "${medico?.nombre} ${medico?.apellido}"
-        especialidad.text = "${medico?.especialidad}"
-        nroConsultorio.text = " CONSULTORIO N ${medico?.consultorioAsignado?.numero}"
 
         // Configurar Sala de espera
         tvCantidadPacientes = findViewById(R.id.tvCantidadPacientesEnEspera)
@@ -133,9 +156,8 @@ class AtencionMedicaActivity : AppCompatActivity() {
 
         cargarSalaEspera()
 
-        // Configurar botón Llamar siguiente
-        val btnLlamarSiguiente =
-            findViewById<Button>(R.id.btnLlamarSiguiente)
+        // Botón Llamar siguiente
+        val btnLlamarSiguiente = findViewById<Button>(R.id.btnLlamarSiguiente)
 
         btnLlamarSiguiente.setOnClickListener {
             llamarSiguientePaciente()
@@ -212,10 +234,18 @@ class AtencionMedicaActivity : AppCompatActivity() {
 
             etBuscarEstudio.text.clear()
         }
-        // Contenedores
-        llListadoPrescripciones = findViewById(R.id.llListadoPrescripciones)
 
-        llListadoEstudios = findViewById(R.id.llListadoEstudios)
+        val btnHistoria = findViewById<Button>(R.id.btnHistoria)
+
+        btnHistoria.setOnClickListener {
+            val intent = Intent(
+                this,
+                HistoriaClinicaActivity::class.java
+            )
+
+            intent.putExtra("paciente_id", pacienteEnAtencion?.id)
+            startActivity(intent)
+        }
         }
 
     override fun onResume() {
