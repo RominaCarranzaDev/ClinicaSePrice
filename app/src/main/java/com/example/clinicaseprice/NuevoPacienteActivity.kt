@@ -1,6 +1,8 @@
 package com.example.clinicaseprice
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
@@ -47,6 +49,53 @@ class NuevoPacienteActivity : BaseActivity() {
         etApellido = findViewById(R.id.etNuevoApellido)
         etDni = findViewById(R.id.etNuevoDni)
         etFechaNacimiento = findViewById(R.id.etNuevoFechaNacimiento)
+        etFechaNacimiento.addTextChangedListener(object : TextWatcher {
+
+            private var modificando = false
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {}
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {}
+
+            override fun afterTextChanged(s: Editable?) {
+
+                if (modificando) return
+
+                val numeros = s.toString()
+                    .filter { it.isDigit() }
+                    .take(8)
+
+                val fecha = StringBuilder()
+
+                for (i in numeros.indices) {
+
+                    if (i == 2 || i == 4) {
+                        fecha.append("/")
+                    }
+
+                    fecha.append(numeros[i])
+                }
+
+                if (fecha.toString() != s.toString()) {
+                    modificando = true
+
+                    etFechaNacimiento.setText(fecha.toString())
+                    etFechaNacimiento.setSelection(fecha.length)
+
+                    modificando = false
+                }
+            }
+        })
         etTelefono = findViewById(R.id.etNuevoTelefono)
         etDomicilio = findViewById(R.id.etNuevoDomicilio)
         etEmail = findViewById(R.id.etNuevoEmail)

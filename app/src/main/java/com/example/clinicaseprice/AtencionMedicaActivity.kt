@@ -47,6 +47,8 @@ class AtencionMedicaActivity : AppCompatActivity() {
 
     // Datos del paciente llamado
     private var pacienteEnAtencion: Paciente? = null
+
+    private var turnoEnAtencion: Turno? = null
     private lateinit var tvNombrePaciente: TextView
     private lateinit var tvInicialesPaciente: TextView
     private  lateinit var hcDniPaciente: TextView
@@ -103,47 +105,150 @@ class AtencionMedicaActivity : AppCompatActivity() {
         especialidad.text = "${medico?.especialidad}"
         nroConsultorio.text = " CONSULTORIO N ${medico?.consultorioAsignado?.numero}"
 
-        // Registrar la atencion en la Historia Clinica
+        // Registrar la atención en la Historia Clínica
         val btnRegistrarAtencion = findViewById<Button>(R.id.btnFinalizarConsulta)
 
         btnRegistrarAtencion.setOnClickListener {
+
+            // Verificar que haya un turno en atención
+            val turnoActual = turnoEnAtencion
+
+            if (turnoActual == null) {
+                Toast.makeText(
+                    this,
+                    "Primero debés llamar a un paciente.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            // Verificar que el turno todavía esté en atención
+            val turnoGuardado = TurnosRepository.buscarPorId(turnoActual.id)
+
+            if (turnoGuardado?.estado != "EN ATENCIÓN") {
+                Toast.makeText(
+                    this,
+                    "Este turno ya no está en atención.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            val pacienteActual = pacienteEnAtencion
+            val medicoActual = medico
+
+            if (pacienteActual == null || medicoActual == null) {
+                Toast.makeText(
+                    this,
+                    "No se pudo identificar al paciente o al médico.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
             val anamnesis = etAnamnesis.text.toString().trim()
             val diagnostico = etDiagnostico.text.toString().trim()
             val observaciones = etObservaciones.text.toString().trim()
 
+            // Validar datos obligatorios
+            if (anamnesis.isEmpty() || diagnostico.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    "Completá la anamnesis y el diagnóstico.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
             val presionMax = findViewById<EditText>(R.id.etPresionArterialMax)
             val presionMin = findViewById<EditText>(R.id.etPresionArterialMin)
-            val etFrecuenciaCardiaca = findViewById<EditText>(R.id.etFrecuenciaCardiaca)
-            val etTemperatura = findViewById<EditText>(R.id.etTemperatura)
-            val etSaturacionOxigeno = findViewById<EditText>(R.id.etSaturacionOxigeno)
+            val etFrecuenciaCardiaca =
+                findViewById<EditText>(R.id.etFrecuenciaCardiaca)
+            val etTemperatura =
+                findViewById<EditText>(R.id.etTemperatura)
+            val etSaturacionOxigeno =
+                findViewById<EditText>(R.id.etSaturacionOxigeno)
 
             val signosVitalesActuales = SignosVitales(
-                presionArterial ="${presionMax.text.toString().trim()} - ${presionMin.text.toString().trim()}",
-                frecuenciaCardiaca = etFrecuenciaCardiaca.text.toString().trim(),
-                temperatura = etTemperatura.text.toString().trim(),
-                saturacionOxigeno = etSaturacionOxigeno.text.toString().trim()
+                presionArterial =
+                    "${presionMax.text.toString().trim()} - ${presionMin.text.toString().trim()}",
+                frecuenciaCardiaca =
+                    etFrecuenciaCardiaca.text.toString().trim(),
+                temperatura =
+                    etTemperatura.text.toString().trim(),
+                saturacionOxigeno =
+                    etSaturacionOxigeno.text.toString().trim()
             )
 
-            HistoriaClinicaRepository.registrarAtencion(
-                pacienteId = pacienteEnAtencion?.id,
-                medicoId = medico?.id,
-                anamnesis = anamnesis,
-                diagnostico = diagnostico,
-                observaciones = observaciones,
-                signosVitales = signosVitalesActuales,
-                prescripciones = prescripcionesActuales.toList(),
-                estudios = estudiosActuales.toList()
+            // Registrar la atención en la historia clínica
+            try {
+                HistoriaClinicaRepository.registrarAtencion(
+                    pacienteId = pacienteActual.id,
+                    medicoId = medicoActual.id,
+                    anamnesis = anamnesis,
+                    diagnostico = diagnostico,
+                    observaciones = observaciones,
+                    signosVitales = signosVitalesActuales,
+                    prescripciones = prescripcionesActuales.toList(),
+                    estudios = estudiosActuales.toList()
+                )
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this,
+                    "No se pudo registrar la atención: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
+
+            // Cambiar el estado del turno a ATENDIDO
+            val actualizado = TurnosRepository.actualizarEstado(
+                id = turnoActual.id,
+                nuevoEstado = "ATENDIDO"
             )
+
+            if (!actualizado) {
+                Toast.makeText(
+                    this,
+                    "La atención se guardó, pero no se pudo actualizar el turno.",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
 
             Toast.makeText(
                 this,
-                "Atención registrada correctamente.",
+                "Consulta finalizada correctamente.",
                 Toast.LENGTH_SHORT
             ).show()
 
-            limpiarCamposAtencion()
-        }
+            // Limpiar la atención actual
+            turnoEnAtencion = null
+            pacienteEnAtencion = null
 
+            limpiarCamposAtencion()
+
+            prescripcionesActuales.clear()
+            estudiosActuales.clear()
+
+            llListadoPrescripciones.removeAllViews()
+            llListadoEstudios.removeAllViews()
+
+            tvNombrePaciente.text = "Seleccione un paciente"
+            tvInicialesPaciente.text = "--"
+            hcDniPaciente.text = ""
+            fechaNacEdad.text = ""
+            emailPaciente.text = ""
+            telPaciente.text = ""
+
+            presionMax.text.clear()
+            presionMin.text.clear()
+            etFrecuenciaCardiaca.text.clear()
+            etTemperatura.text.clear()
+            etSaturacionOxigeno.text.clear()
+
+            cargarSalaEspera()
+        }
         // Configurar Sala de espera
         tvCantidadPacientes = findViewById(R.id.tvCantidadPacientesEnEspera)
 
@@ -308,6 +413,7 @@ class AtencionMedicaActivity : AppCompatActivity() {
             ).show()
             return
         }
+        turnoEnAtencion = turno
 
         cargarHistoriaClinica(turno.pacienteId)
 

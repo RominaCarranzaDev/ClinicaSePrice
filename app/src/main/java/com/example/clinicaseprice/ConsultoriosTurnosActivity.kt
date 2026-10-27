@@ -1,5 +1,7 @@
 package com.example.clinicaseprice
 
+import android.app.DatePickerDialog
+import java.util.Calendar
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -329,6 +331,52 @@ class ConsultoriosTurnosActivity : BaseActivity() {
 
         val etFecha = crearCampo("Fecha (dd/mm/aaaa)")
         val etHorario = crearCampo("Horario (ej. 09:00)")
+
+        if (turno != null) {
+
+            etFecha.isFocusable = false
+            etFecha.isClickable = true
+            etFecha.hint = "Seleccionar fecha"
+
+            etFecha.setOnClickListener {
+
+                val calendario = Calendar.getInstance()
+
+                try {
+                    val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    formato.isLenient = false
+
+                    val fechaActual = formato.parse(etFecha.text.toString())
+
+                    if (fechaActual != null) {
+                        calendario.time = fechaActual
+                    }
+                } catch (e: Exception) {
+
+                }
+
+                val selectorFecha = DatePickerDialog(
+                    this,
+                    { _, anio, mes, dia ->
+
+                        val fechaSeleccionada = String.format(
+                            Locale.getDefault(),
+                            "%02d/%02d/%04d",
+                            dia,
+                            mes + 1,
+                            anio
+                        )
+
+                        etFecha.setText(fechaSeleccionada)
+                    },
+                    calendario.get(Calendar.YEAR),
+                    calendario.get(Calendar.MONTH),
+                    calendario.get(Calendar.DAY_OF_MONTH)
+                )
+
+                selectorFecha.show()
+            }
+        }
 
         val cbSobreturno = CheckBox(this).apply {
             text = "Registrar como sobreturno"
