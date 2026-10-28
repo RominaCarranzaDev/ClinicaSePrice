@@ -217,6 +217,8 @@ object PacientesRepository {
             apellidoLimpio
         ).filter { it.isNotEmpty() }.joinToString(" ")
 
+        val numeroHistoria = "HC-${String.format("%03d", siguienteId)}"
+
         val nuevoPaciente = Paciente(
             id = siguienteId++,
             nombreCompleto = nombreCompleto,
@@ -228,7 +230,8 @@ object PacientesRepository {
             fechaNacimiento = fechaNacimiento.trim(),
             domicilio = domicilio.trim(),
             email = email.trim(),
-            numeroObraSocial = numeroObraSocial.trim()
+            numeroObraSocial = numeroObraSocial.trim(),
+            numeroHistoriaClinica = numeroHistoria
         )
 
         pacientes.add(nuevoPaciente)

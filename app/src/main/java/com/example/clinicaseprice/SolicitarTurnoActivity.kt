@@ -158,11 +158,13 @@ class SolicitarTurnoActivity : AppCompatActivity() {
             }
         )
     }
+
     private fun cargarEspecialidades() {
-        val especialidades = MedicosRepository.obtenerTodos()
-            .map { it.especialidad }
-            .distinct()
-            .sorted()
+        val especialidades = listOf("Seleccioná una especialidad") +
+                MedicosRepository.obtenerTodos()
+                    .map { it.especialidad }
+                    .distinct()
+                    .sorted()
 
         val adapter = ArrayAdapter(
             this,
@@ -176,6 +178,7 @@ class SolicitarTurnoActivity : AppCompatActivity() {
 
         spEspecialidad.adapter = adapter
     }
+
 
     private fun configurarEventos() {
 

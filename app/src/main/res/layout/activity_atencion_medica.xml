@@ -54,18 +54,6 @@ android:background="@color/white">
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <EditText
-            android:id="@+id/etBuscarPaciente"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Buscar paciente por DNI/HC..."
-            android:textSize="@dimen/text_body"
-            android:singleLine="true"
-            android:paddingHorizontal="@dimen/spacing_s"
-            android:backgroundTint="@color/shadow"
-            android:inputType="text" />
-
     </LinearLayout>
 
     <!-- Contenedor -->

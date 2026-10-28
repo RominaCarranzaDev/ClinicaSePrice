@@ -125,7 +125,7 @@ class AtencionMedicaActivity : AppCompatActivity() {
             // Verificar que el turno todavía esté en atención
             val turnoGuardado = TurnosRepository.buscarPorId(turnoActual.id)
 
-            if (turnoGuardado?.estado != "EN ATENCIÓN") {
+            if (!turnoGuardado?.estado.equals("En atención", ignoreCase = true)) {
                 Toast.makeText(
                     this,
                     "Este turno ya no está en atención.",
@@ -340,18 +340,33 @@ class AtencionMedicaActivity : AppCompatActivity() {
             etBuscarEstudio.text.clear()
         }
 
+
         val btnHistoria = findViewById<Button>(R.id.btnHistoria)
 
         btnHistoria.setOnClickListener {
+
+            val paciente = pacienteEnAtencion
+
+            if (paciente == null) {
+                Toast.makeText(
+                    this,
+                    "No hay paciente para atender",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
             val intent = Intent(
                 this,
                 HistoriaClinicaActivity::class.java
             )
 
-            intent.putExtra("paciente_id", pacienteEnAtencion?.id)
+            intent.putExtra("paciente_id", paciente.id)
             startActivity(intent)
         }
-        }
+
+    }
 
     override fun onResume() {
         super.onResume()
@@ -359,21 +374,22 @@ class AtencionMedicaActivity : AppCompatActivity() {
     }
 
     // Cargar los turnos acreditados en la lista de espera
+
     private fun cargarSalaEspera() {
-        // Limpia el listado para cargarlo actualizado
         pacientesEnEspera.clear()
 
         pacientesEnEspera.addAll(
-            TurnosRepository.obtenerTodos().filter { turno ->
-                turno.estado.equals("Acreditado", ignoreCase = true) &&
-                        turno.consultorio == medico?.consultorioAsignado?.numero.toString()
-            }
+            TurnosRepository.obtenerTodos()
+                .filter { turno ->
+                    turno.estado.equals("ACREDITADO", ignoreCase = true)
+                }
+                .sortedBy { it.horario }
         )
-        // Mantiene actualizado el listado
+
         adapterSalaEspera.actualizarLista(pacientesEnEspera)
-        // Contador de pacientes en espera
         actualizarCantidadPacientes()
     }
+
 
     // Actualizar el contador de pacientes en espera
     private fun actualizarCantidadPacientes() {
@@ -389,9 +405,26 @@ class AtencionMedicaActivity : AppCompatActivity() {
 
     // Llama al primer paciente de la lista para ser atendido
     private fun llamarSiguientePaciente() {
-
         if (pacientesEnEspera.isEmpty()) {
-            tvNombrePaciente.text = "No hay pacientes en espera"
+
+            if (pacienteEnAtencion == null) {
+                turnoEnAtencion = null
+
+                tvNombrePaciente.text = "No hay paciente para atender"
+
+                Toast.makeText(
+                    this,
+                    "No hay paciente para atender",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    this,
+                    "No hay pacientes en espera",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
             return
         }
         // Obtener el primer paciente

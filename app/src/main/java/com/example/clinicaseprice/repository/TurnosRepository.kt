@@ -730,15 +730,8 @@ object TurnosRepository {
                 "Seleccioná un médico válido."
             )
 
-        turnoGuardado.pacienteId = paciente.id
         turnoGuardado.fecha = fecha
         turnoGuardado.horario = horario
-        turnoGuardado.consultorio =
-            medico.consultorioAsignado.numero.toString()
-        turnoGuardado.medicoId = medico.id
-        turnoGuardado.nombreMedico =
-            "${medico.nombre} ${medico.apellido}"
-        turnoGuardado.esSobreturno = esSobreturno
 
         if (turno !== turnoGuardado) {
             turno.pacienteId = turnoGuardado.pacienteId

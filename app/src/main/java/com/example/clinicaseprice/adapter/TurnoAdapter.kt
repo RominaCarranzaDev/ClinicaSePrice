@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.clinicaseprice.R
 import com.example.clinicaseprice.model.Turno
 import com.example.clinicaseprice.repository.PacientesRepository
-
+import com.example.clinicaseprice.repository.MedicosRepository
 
 class TurnoAdapter(
     private val listaTurnos: MutableList<Turno>,
@@ -90,8 +90,10 @@ class TurnoAdapter(
 
         // Datos del paciente
         val paciente = PacientesRepository.buscarPorId(turno.pacienteId)
+        val medico = MedicosRepository.buscarPorId(turno.medicoId)
 
-        holder.tvPaciente.text = paciente?.nombreCompleto ?: "Paciente no encontrado"
+        holder.tvPaciente.text =
+            paciente?.nombreCompleto ?: "Paciente no encontrado"
 
         val tipoTurno = if (turno.esSobreturno) {
             "\nSOBRETURNO"
@@ -102,6 +104,7 @@ class TurnoAdapter(
         holder.tvDetalles.text =
             "DNI: ${paciente?.dni ?: "No disponible"}\n" +
             "Médico: ${turno.nombreMedico}\n" +
+            "Especialidad: ${medico?.especialidad ?: "No disponible"}\n" +
             "Fecha: ${turno.fecha}\n" +
             "Horario: ${turno.horario}\n" +
             "Consultorio: ${turno.consultorio}\n" +

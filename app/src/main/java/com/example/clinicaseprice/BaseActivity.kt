@@ -32,6 +32,7 @@ open class BaseActivity : AppCompatActivity() {
         val navPacientes = findViewById<TextView>(R.id.navPacientes)
         val navTurnos = findViewById<TextView>(R.id.navTurnos)
         val navSalaEspera = findViewById<TextView>(R.id.navSalaEspera)
+        val navAdministracion = findViewById<TextView>(R.id.navAdministracion)
         val btnCerrarSesion = findViewById<TextView>(R.id.btnCerrarSesion)
 
         navMenu.setOnClickListener {
@@ -48,6 +49,10 @@ open class BaseActivity : AppCompatActivity() {
 
         navSalaEspera.setOnClickListener {
             abrirPantalla(SalaEsperaActivity::class.java)
+        }
+
+        navAdministracion.setOnClickListener {
+            abrirPantalla(AdministracionActivity::class.java)
         }
 
         btnCerrarSesion.setOnClickListener {
@@ -74,9 +79,20 @@ open class BaseActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.txtTitulo).text = titulo
         findViewById<TextView>(R.id.txtSubtitulo).text = subtitulo
 
-        // La barra de búsqueda queda disponible en todas las pantallas.
-        contenedorContenido.removeAllViews()
 
+    // Mostrar el buscador en las pantallas que lo necesitan.
+    // En Administración no corresponde mostrarlo.
+        val layoutBusqueda = findViewById<android.view.View>(
+            R.id.layoutBusquedaGlobal
+        )
+
+        layoutBusqueda.visibility = if (opcionActiva == "administracion") {
+            android.view.View.GONE
+        } else {
+            android.view.View.VISIBLE
+        }
+
+        contenedorContenido.removeAllViews()
         LayoutInflater.from(this).inflate(
             layoutContenido,
             contenedorContenido,

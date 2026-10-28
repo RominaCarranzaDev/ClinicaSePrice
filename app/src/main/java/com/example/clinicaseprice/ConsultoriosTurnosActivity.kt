@@ -383,44 +383,59 @@ class ConsultoriosTurnosActivity : BaseActivity() {
             textSize = 14f
         }
 
-        contenedor.addView(TextView(this).apply {
-            text = "Seleccionar paciente"
-            textSize = 14f
-        })
-        contenedor.addView(spPaciente)
-        contenedor.addView(tvDatosPaciente)
 
-        contenedor.addView(TextView(this).apply {
-            text = "Seleccionar médico"
-            textSize = 14f
-        })
-        contenedor.addView(spMedico)
-        contenedor.addView(tvDatosMedico)
+        if (turno == null) {
+            contenedor.addView(TextView(this).apply {
+                text = "Seleccionar paciente"
+                textSize = 14f
+            })
+            contenedor.addView(spPaciente)
+            contenedor.addView(tvDatosPaciente)
+
+            contenedor.addView(TextView(this).apply {
+                text = "Seleccionar médico"
+                textSize = 14f
+            })
+            contenedor.addView(spMedico)
+            contenedor.addView(tvDatosMedico)
+
+            contenedor.addView(cbSobreturno)
+        } else {
+            val pacienteActual = PacientesRepository.buscarPorId(
+                turno.pacienteId
+            )
+            val medicoActual = MedicosRepository.buscarPorId(
+                turno.medicoId
+            )
+
+            contenedor.addView(TextView(this).apply {
+                text = "Paciente: ${pacienteActual?.nombreCompleto ?: "No disponible"}"
+                textSize = 15f
+            })
+
+            contenedor.addView(TextView(this).apply {
+                text = "Médico: ${turno.nombreMedico}"
+                textSize = 15f
+            })
+
+            contenedor.addView(TextView(this).apply {
+                text = "Especialidad: ${medicoActual?.especialidad ?: "No disponible"}"
+                textSize = 15f
+            })
+
+            contenedor.addView(TextView(this).apply {
+                text = "Consultorio: ${medicoActual?.consultorioAsignado?.numero ?: turno.consultorio}"
+                textSize = 15f
+            })
+        }
 
         contenedor.addView(etFecha)
         contenedor.addView(etHorario)
-        contenedor.addView(cbSobreturno)
+
 
         if (turno != null) {
-            val indicePaciente = pacientesRegistrados.indexOfFirst {
-                it.id == turno.pacienteId
-            }
-
-            if (indicePaciente >= 0) {
-                spPaciente.setSelection(indicePaciente)
-            }
-
-            val indiceMedico = medicosRegistrados.indexOfFirst {
-                it.id == turno.medicoId
-            }
-
-            if (indiceMedico >= 0) {
-                spMedico.setSelection(indiceMedico)
-            }
-
             etFecha.setText(turno.fecha)
             etHorario.setText(turno.horario)
-            cbSobreturno.isChecked = turno.esSobreturno
         }
 
         fun actualizarDatosMedico() {
@@ -489,15 +504,21 @@ class ConsultoriosTurnosActivity : BaseActivity() {
             dialogo.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setOnClickListener {
 
-                    val pacienteSeleccionado =
+                    val pacienteSeleccionado = if (turno == null) {
                         pacientesRegistrados.getOrNull(
                             spPaciente.selectedItemPosition
                         )
+                    } else {
+                        PacientesRepository.buscarPorId(turno.pacienteId)
+                    }
 
-                    val medicoSeleccionado =
+                    val medicoSeleccionado = if (turno == null) {
                         medicosRegistrados.getOrNull(
                             spMedico.selectedItemPosition
                         )
+                    } else {
+                        MedicosRepository.buscarPorId(turno.medicoId)
+                    }
 
                     if (pacienteSeleccionado == null) {
                         Toast.makeText(
@@ -583,8 +604,8 @@ class ConsultoriosTurnosActivity : BaseActivity() {
                                 dniPaciente = pacienteActual.dni,
                                 fecha = fecha,
                                 horario = horario,
-                                medicoId = medicoSeleccionado.id,
-                                esSobreturno = cbSobreturno.isChecked
+                                medicoId = turnoActual.medicoId,
+                                esSobreturno = turnoActual.esSobreturno
                             )
 
                             Toast.makeText(

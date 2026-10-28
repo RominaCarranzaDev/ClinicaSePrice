@@ -41,15 +41,7 @@ object HistoriaClinicaRepository {
                     observacionesGenerales =
                         "Historia clínica de ejemplo",
 
-                    atenciones = mutableListOf(
-                        AtencionMedica(
-                            id = 1,
-                            fecha = fechaActual(),
-                            medicoId = 1,
-                            anamnesis = "Anamnesis de ejemplo $numero",
-                            diagnostico = "Diagnóstico de ejemplo $numero"
-                        )
-                    )
+                    atenciones = mutableListOf()
                 )
             )
         }
@@ -171,6 +163,13 @@ object HistoriaClinicaRepository {
             ?.atenciones
             ?.toList()
             ?: emptyList()
+    }
+
+    // Obtener todas las atenciones de todas las historias clínicas
+    fun obtenerTodasLasAtenciones(): List<AtencionMedica> {
+        return historias.flatMap { historia ->
+            historia.atenciones
+        }
     }
 
     private fun fechaActual(): String {

@@ -24,6 +24,8 @@ class PacienteAdapter(
         val tvTelefono: TextView = itemView.findViewById(R.id.tvTelefono)
         val tvObraSocial: TextView = itemView.findViewById(R.id.tvObraSocial)
 
+        val tvEmail: TextView = itemView.findViewById(R.id.tvEmail)
+
         val btnFicha: ImageButton = itemView.findViewById(R.id.btnFicha)
     }
 
@@ -47,6 +49,7 @@ class PacienteAdapter(
         holder.tvDni.text = paciente.dni
         holder.tvTelefono.text = paciente.telefono
         holder.tvObraSocial.text = paciente.obraSocial
+        holder.tvEmail.text = paciente.email
 
         holder.btnFicha.setOnClickListener {
             onItemClick(paciente)

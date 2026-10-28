@@ -73,6 +73,9 @@
             android:name=".HistoriaClinicaActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".AdministracionActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
