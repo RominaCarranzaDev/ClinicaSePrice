@@ -141,6 +141,17 @@ object PacientesRepository {
     private fun normalizarDni(dni: String): String =
         dni.filter { it.isDigit() }
 
+    private fun normalizarFechaNacimiento(fecha: String): String {
+        val numeros = fecha.filter { it.isDigit() }
+
+        return if (numeros.length == 8) {
+            "${numeros.substring(0, 2)}/${numeros.substring(2, 4)}/${numeros.substring(4, 8)}"
+        } else {
+            fecha.trim()
+        }
+    }
+
+
     // Obtener todos los pacientes.
     fun obtenerTodos(): List<Paciente> =
         pacientes.toList()
@@ -217,7 +228,6 @@ object PacientesRepository {
             apellidoLimpio
         ).filter { it.isNotEmpty() }.joinToString(" ")
 
-        val numeroHistoria = "HC-${String.format("%03d", siguienteId)}"
 
         val nuevoPaciente = Paciente(
             id = siguienteId++,
@@ -227,11 +237,11 @@ object PacientesRepository {
             obraSocial = obraSocial.trim(),
             nombre = nombreLimpio,
             apellido = apellidoLimpio,
-            fechaNacimiento = fechaNacimiento.trim(),
+            fechaNacimiento = normalizarFechaNacimiento(fechaNacimiento),
             domicilio = domicilio.trim(),
             email = email.trim(),
             numeroObraSocial = numeroObraSocial.trim(),
-            numeroHistoriaClinica = numeroHistoria
+            numeroHistoriaClinica = ""
         )
 
         pacientes.add(nuevoPaciente)
@@ -287,7 +297,7 @@ object PacientesRepository {
         paciente.dni = dniNormalizado
         paciente.telefono = telefono.trim()
         paciente.obraSocial = obraSocial.trim()
-        paciente.fechaNacimiento = fechaNacimiento.trim()
+        paciente.fechaNacimiento = normalizarFechaNacimiento(fechaNacimiento)
         paciente.domicilio = domicilio.trim()
         paciente.email = email.trim()
         paciente.numeroObraSocial = numeroObraSocial.trim()

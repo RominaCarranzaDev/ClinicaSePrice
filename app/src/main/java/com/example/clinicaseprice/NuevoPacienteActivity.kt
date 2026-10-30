@@ -173,7 +173,15 @@ class NuevoPacienteActivity : BaseActivity() {
         )
         etApellido.setText(paciente.apellido)
         etDni.setText(paciente.dni)
-        etFechaNacimiento.setText(paciente.fechaNacimiento)
+        val fecha = paciente.fechaNacimiento.filter { it.isDigit() }
+
+        if (fecha.length == 8) {
+            etFechaNacimiento.setText(
+                "${fecha.substring(0, 2)}/${fecha.substring(2, 4)}/${fecha.substring(4, 8)}"
+            )
+        } else {
+            etFechaNacimiento.setText(paciente.fechaNacimiento)
+        }
         etTelefono.setText(paciente.telefono)
         etDomicilio.setText(paciente.domicilio)
         etEmail.setText(paciente.email)

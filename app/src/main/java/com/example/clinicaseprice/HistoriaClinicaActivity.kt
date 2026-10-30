@@ -21,6 +21,11 @@ class HistoriaClinicaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_historia_clinica)
+        val btnVolver = findViewById<TextView>(R.id.btnVolver)
+
+        btnVolver.setOnClickListener {
+            finish()
+        }
         rvAtenciones = findViewById(R.id.rvAtenciones)
         tvSinAtenciones = findViewById(R.id.tvSinAtenciones)
 

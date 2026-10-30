@@ -121,7 +121,14 @@ class AtencionMedicaActivity : AppCompatActivity() {
                 ).show()
                 return@setOnClickListener
             }
-
+            if (!correspondeAlConsultorio(turnoActual)) {
+                Toast.makeText(
+                    this,
+                    "No podés atender pacientes de otro consultorio.",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
             // Verificar que el turno todavía esté en atención
             val turnoGuardado = TurnosRepository.buscarPorId(turnoActual.id)
 
@@ -373,15 +380,25 @@ class AtencionMedicaActivity : AppCompatActivity() {
         cargarSalaEspera()
     }
 
+    // Verifica que el turno pertenezca al médico que ingresó.
+    private fun correspondeAlConsultorio(turno: Turno): Boolean {
+        val medicoActual = medico ?: return false
+
+        return turno.medicoId == medicoActual.id
+    }
+
     // Cargar los turnos acreditados en la lista de espera
 
+    // Cargar los turnos acreditados en la lista de espera
     private fun cargarSalaEspera() {
+
         pacientesEnEspera.clear()
 
         pacientesEnEspera.addAll(
             TurnosRepository.obtenerTodos()
                 .filter { turno ->
-                    turno.estado.equals("ACREDITADO", ignoreCase = true)
+                    turno.estado.equals("ACREDITADO", ignoreCase = true) &&
+                            correspondeAlConsultorio(turno)
                 }
                 .sortedBy { it.horario }
         )
@@ -389,6 +406,8 @@ class AtencionMedicaActivity : AppCompatActivity() {
         adapterSalaEspera.actualizarLista(pacientesEnEspera)
         actualizarCantidadPacientes()
     }
+
+
 
 
     // Actualizar el contador de pacientes en espera
@@ -429,6 +448,16 @@ class AtencionMedicaActivity : AppCompatActivity() {
         }
         // Obtener el primer paciente
         val turno = pacientesEnEspera[0]
+        if (!correspondeAlConsultorio(turno)) {
+            Toast.makeText(
+                this,
+                "Este paciente no pertenece a tu consultorio.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            cargarSalaEspera()
+            return
+        }
         val paciente = PacientesRepository.buscarPorId(turno.pacienteId)
         pacienteEnAtencion = paciente
         cargarDatosPaciente(paciente)

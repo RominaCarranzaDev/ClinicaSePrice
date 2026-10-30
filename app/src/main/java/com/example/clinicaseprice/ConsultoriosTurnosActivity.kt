@@ -105,6 +105,14 @@ class ConsultoriosTurnosActivity : BaseActivity() {
         filtrarTurnos()
     }
 
+    // Actualiza los turnos cada vez que volvemos a esta pantalla.
+    override fun onResume() {
+        super.onResume()
+
+        if (::adaptador.isInitialized) {
+            filtrarTurnos()
+        }
+    }
 
     private fun obtenerFechaHoy(): String {
         return SimpleDateFormat(
@@ -211,8 +219,14 @@ class ConsultoriosTurnosActivity : BaseActivity() {
             val dniPaciente =
                 paciente?.dni.orEmpty().filter { it.isDigit() }
 
+            val nombreBuscado = busqueda.trim().replace(Regex("\\s+"), " ")
+
+            val nombreCompletoNormalizado = nombrePaciente
+                .trim()
+                .replace(Regex("\\s+"), " ")
+
             val coincideNombre =
-                nombrePaciente.contains(busqueda)
+                nombreCompletoNormalizado.contains(nombreBuscado)
 
             val coincideDni =
                 busquedaDni.isNotEmpty() &&

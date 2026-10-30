@@ -7,6 +7,18 @@
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/btnVolver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="← Volver"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#1565C0"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Historia clínica - Atenciones"

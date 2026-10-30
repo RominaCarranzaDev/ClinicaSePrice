@@ -86,7 +86,10 @@ open class BaseActivity : AppCompatActivity() {
             R.id.layoutBusquedaGlobal
         )
 
-        layoutBusqueda.visibility = if (opcionActiva == "administracion") {
+        layoutBusqueda.visibility = if (
+            opcionActiva == "administracion" ||
+            this is NuevoPacienteActivity
+        ) {
             android.view.View.GONE
         } else {
             android.view.View.VISIBLE

@@ -136,6 +136,13 @@ object HistoriaClinicaRepository {
                 "No se pudo crear la historia clínica del paciente"
             )
 
+// Actualizar el número de historia clínica del paciente.
+        val paciente = pacienteId?.let {
+            PacientesRepository.buscarPorId(it)
+        }
+
+        paciente?.numeroHistoriaClinica = historia.numeroHistoriaClinica
+
         val nuevoId = (historia.atenciones.maxOfOrNull { it.id } ?: 0) + 1
 
         val atencion = AtencionMedica(
